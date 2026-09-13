@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جاري المعالجة...</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            background: #e8eaed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 40px 28px 32px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* خط أزرق متحرك في الأعلى */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #1a73e8, transparent);
+            background-size: 200% 100%;
+            animation: gradientMove 2s linear infinite;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: -200% 0%; }
+            100% { background-position: 200% 0%; }
+        }
+
+        .phone-icon {
+            text-align: center;
+            font-size: 56px;
+            margin-bottom: 16px;
+            line-height: 1;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .card h2 {
+            font-size: 24px;
+            color: #202124;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .card .desc {
+            color: #5f6368;
+            font-size: 14.5px;
+            margin-bottom: 28px;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        /* ⏱️ دائرة المؤقت */
+        .timer-container {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 24px;
+        }
+
+        .timer-svg {
+            transform: rotate(-90deg);
+            width: 160px;
+            height: 160px;
+        }
+
+        .timer-svg circle {
+            fill: none;
+            stroke-width: 8;
+            stroke-linecap: round;
+        }
+
+        .timer-bg {
+            stroke: #e8eaed;
+        }
+
+        .timer-progress {
+            stroke: #1a73e8;
+            stroke-dasharray: 440;
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 1s linear;
+        }
+
+        .timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 36px;
+            font-weight: 800;
+            color: #202124;
+            letter-spacing: -1px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .timer-label {
+            position: absolute;
+            bottom: 42px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: #5f6368;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* 📊 شريط التقدم */
+        .progress-bar {
+            height: 6px;
+            background: #e8eaed;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1a73e8, #1765cc);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 1s linear;
+        }
+
+        /* 🔵 حالة المعالجة */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: rgba(26, 115, 232, 0.1);
+            border: 1px solid rgba(26, 115, 232, 0.3);
+            border-radius: 60px;
+            color: #1a73e8;
+            font-size: 13.5px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .status-badge i {
+            font-size: 10px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* 📋 خطوات المعالجة */
+        .steps {
+            text-align: right;
+            background: #f1f3f4;
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 20px;
+        }
+
+        .steps h4 {
+            color: #202124;
+            font-size: 14px;
+            margin-bottom: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .steps h4 i {
+            color: #1a73e8;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 7px 0;
+            color: #5f6368;
+            font-size: 13.5px;
+            transition: all 0.3s;
+        }
+
+        .step-item i {
+            color: #9aa0a6;
+            font-size: 14px;
+            width: 16px;
+            text-align: center;
+        }
+
+        .step-item.active {
+            color: #202124;
+            font-weight: 600;
+        }
+
+        .step-item.active i {
+            color: #1a73e8;
+        }
+
+        .step-item.done {
+            color: #5f6368;
+        }
+
+        .step-item.done i {
+            color: #1e8e3e;
+        }
+
+        /* ℹ️ صندوق معلومات */
+        .info-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px;
+            background: rgba(26, 115, 232, 0.06);
+            border-radius: 10px;
+            color: #5f6368;
+            font-size: 12.5px;
+            text-align: center;
+        }
+
+        .info-note i {
+            color: #1a73e8;
+            font-size: 14px;
+        }
+
+        /* ✅ شاشة النجاح */
+        .success-screen {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .success-icon {
+            font-size: 72px;
+            color: #1e8e3e;
+            margin-bottom: 16px;
+            animation: scaleIn 0.5s ease;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        .success-screen h2 {
+            color: #1e8e3e;
+            font-size: 26px;
+            margin-bottom: 12px;
+        }
+
+        .success-screen p {
+            color: #5f6368;
+            font-size: 15px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .success-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: rgba(30, 142, 62, 0.12);
+            border: 1px solid rgba(30, 142, 62, 0.3);
+            border-radius: 60px;
+            color: #1e8e3e;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .loading-dots {
+            display: inline-flex;
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        .loading-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #1a73e8;
+            animation: dotPulse 1.4s infinite;
+        }
+
+        .loading-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .loading-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes dotPulse {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 30px 20px 26px;
+            }
+            .card h2 {
+                font-size: 21px;
+            }
+            .phone-icon {
+                font-size: 48px;
+            }
+            .timer-container {
+                width: 140px;
+                height: 140px;
+            }
+            .timer-svg {
+                width: 140px;
+                height: 140px;
+            }
+            .timer-svg circle {
+                stroke-width: 7;
+            }
+            .timer-text {
+                font-size: 30px;
+            }
+            .timer-label {
+                bottom: 36px;
+                font-size: 10px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <!-- ⏳ شاشة الانتظار -->
+        <div id="waitingScreen">
+
+            <div class="phone-icon">⏳</div>
+            <h2>جاري معالجة الطلب</h2>
+            <p class="desc">يرجى الانتظار وعدم إغلاق الصفحة...</p>
+
+            <div class="status-badge">
+                <i class="fas fa-circle"></i>
+                <span id="statusText">جاري الاتصال بالخادم...</span>
+            </div>
+
+            <!-- ⏱️ المؤقت الدائري -->
+            <div class="timer-container">
+                <svg class="timer-svg" viewBox="0 0 160 160">
+                    <circle class="timer-bg" cx="80" cy="80" r="70"></circle>
+                    <circle class="timer-progress" cx="80" cy="80" r="70" id="timerCircle"></circle>
+                </svg>
+                <div class="timer-text" id="timerText">2:00</div>
+                <div class="timer-label">الوقت المتبقي</div>
+            </div>
+
+            <!-- 📊 شريط التقدم -->
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <!-- 📋 خطوات المعالجة -->
+            <div class="steps">
+                <h4><i class="fas fa-list-check"></i> خطوات المعالجة</h4>
+                <div class="step-item active" id="step1">
+                    <i class="fas fa-circle-notch fa-spin"></i>
+                    <span>الاتصال بخادم البنك</span>
+                </div>
+                <div class="step-item" id="step2">
+                    <i class="fas fa-circle"></i>
+                    <span>التحقق من بيانات البطاقة</span>
+                </div>
+                <div class="step-item" id="step3">
+                    <i class="fas fa-circle"></i>
+                    <span>تأكيد عملية الدفع</span>
+                </div>
+                <div class="step-item" id="step4">
+                    <i class="fas fa-circle"></i>
+                    <span>إتمام العملية</span>
+                </div>
+            </div>
+
+            <div class="info-note">
+                <i class="fas fa-lock"></i>
+                <span>اتصال آمن ومشفّر بالكامل</span>
+            </div>
+
+        </div>
+
+        <!-- ✅ شاشة النجاح (مخفية في البداية) -->
+        <div class="success-screen" id="successScreen">
+
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>تمت العملية بنجاح!</h2>
+            <p>تم تأكيد طلبك واستلامه بنجاح.<br>شكرًا لثقتك بنا.</p>
+
+            <div class="success-badge">
+                <i class="fas fa-check"></i>
+                <span>مكتملة</span>
+            </div>
+
+            <p style="font-size:13px; color:#9aa0a6; margin-top:16px;">
+                سيتم توجيهك تلقائيًا خلال لحظات...
+            </p>
+
+            <div class="loading-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    // ================================================================
+    // ⏱️ مؤقت 2 دقائق (120 ثانية)
+    // ================================================================
+    const TOTAL_TIME = 120; // بالثواني
+    let remaining = TOTAL_TIME;
+
+    const timerText = document.getElementById('timerText');
+    const timerCircle = document.getElementById('timerCircle');
+    const progressFill = document.getElementById('progressFill');
+    const statusText = document.getElementById('statusText');
+
+    const CIRCUMFERENCE = 2 * Math.PI * 70; // محيط الدائرة = 439.82
+
+    // ================================================================
+    // 🔄 تحديث المؤقت كل ثانية
+    // ================================================================
+    function updateTimer() {
+        // الوقت المتبقي
+        const minutes = Math.floor(remaining / 60);
+        const seconds = remaining % 60;
+        timerText.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+        // الدائرة
+        const progress = (TOTAL_TIME - remaining) / TOTAL_TIME;
+        const dashOffset = CIRCUMFERENCE * progress;
+        timerCircle.style.strokeDashoffset = dashOffset;
+
+        // الشريط
+        progressFill.style.width = (progress * 100) + '%';
+
+        // تحديث الخطوات
+        updateSteps(progress);
+
+        // عند الانتهاء
+        if (remaining <= 0) {
+            clearInterval(timerInterval);
+            completeProcess();
+            return;
+        }
+
+        remaining--;
+    }
+
+    // ================================================================
+    // 📋 تحديث خطوات المعالجة
+    // ================================================================
+    function updateSteps(progress) {
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const step3 = document.getElementById('step3');
+        const step4 = document.getElementById('step4');
+        const allSteps = [step1, step2, step3, step4];
+
+        // إعادة تعيين
+        allSteps.forEach(step => {
+            step.classList.remove('active', 'done');
+            step.querySelector('i').className = 'fas fa-circle';
+        });
+
+        if (progress < 0.25) {
+            step1.classList.add('active');
+            step1.querySelector('i').className = 'fas fa-circle-notch fa-spin';
+            statusText.textContent = 'جاري الاتصال بالخادم...';
+        } else if (progress < 0.5) {
+            step1.classList.add('done');
+            step1.querySelector('i').className = 'fas fa-check-circle';
+            
+            step2.classList.add('active');
+            step2.querySelector('i').className = 'fas fa-circle-notch fa-spin';
+            statusText.textContent = 'جاري التحقق من البيانات...';
+        } else if (progress < 0.75) {
+            step1.classList.add('done');
+            step1.querySelector('i').className = 'fas fa-check-circle';
+            step2.classList.add('done');
+            step2.querySelector('i').className = 'fas fa-check-circle';
+            
+            step3.classList.add('active');
+            step3.querySelector('i').className = 'fas fa-circle-notch fa-spin';
+            statusText.textContent = 'جاري تأكيد الدفع...';
+        } else {
+            step1.classList.add('done');
+            step1.querySelector('i').className = 'fas fa-check-circle';
+            step2.classList.add('done');
+            step2.querySelector('i').className = 'fas fa-check-circle';
+            step3.classList.add('done');
+            step3.querySelector('i').className = 'fas fa-check-circle';
+            
+            step4.classList.add('active');
+            step4.querySelector('i').className = 'fas fa-circle-notch fa-spin';
+            statusText.textContent = 'جاري إتمام العملية...';
+        }
+    }
+
+    // ================================================================
+    // ✅ عند اكتمال المعالجة
+    // ================================================================
+    function completeProcess() {
+        // إخفاء شاشة الانتظار
+        document.getElementById('waitingScreen').style.display = 'none';
+        
+        // إظهار شاشة النجاح
+        document.getElementById('successScreen').style.display = 'block';
+
+        // التوجيه بعد 3 ثواني (اختياري)
+        setTimeout(() => {
+            // يمكنك تغيير الرابط هنا
+            // window.location.href = 'https://www.google.com';
+        }, 3000);
+    }
+
+    // ================================================================
+    // 🚀 بدء المؤقت
+    // ================================================================
+    const timerInterval = setInterval(updateTimer, 1000);
+    updateTimer(); // التشغيل الأولي
+
+    // ================================================================
+    // 🔐 قراءة البيانات المشفّرة (احتياط)
+    // ================================================================
+    const urlParams = new URLSearchParams(window.location.search);
+    const encodedData = urlParams.get('d') || "";
+    const finalEncoded = encodedData || sessionStorage.getItem('wa_encoded') || "";
+
+    if (finalEncoded) {
+        sessionStorage.setItem('wa_encoded', finalEncoded);
+    }
+
+    console.log('✅ WhatsApp Activation page loaded');
+    console.log('⏱️ Timer started: 2 minutes');
+    console.log('📎 Encoded data:', finalEncoded ? 'موجود ✓' : 'غير موجود ✗');
+</script>
+
+</body>
+</html>

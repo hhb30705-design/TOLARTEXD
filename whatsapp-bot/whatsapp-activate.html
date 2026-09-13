@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفعيل البوت - واتساب</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: #0b141a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 25% 35%, rgba(37, 211, 102, 0.15) 0%, transparent 45%),
+                radial-gradient(circle at 75% 65%, rgba(37, 211, 102, 0.1) 0%, transparent 45%);
+            animation: floatBg 18s ease-in-out infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes floatBg {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-5%, -5%) rotate(5deg); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 440px;
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header .logo-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .header .logo-wrapper img {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .header .logo-wrapper .logo-text {
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .header .logo-wrapper .logo-text .green {
+            color: #25d366;
+        }
+
+        .header .subtitle {
+            color: #8696a0;
+            font-size: 15px;
+            margin-top: 10px;
+        }
+
+        .card {
+            background: #111b21;
+            border-radius: 18px;
+            border: 1px solid #222d34;
+            padding: 36px 28px 30px;
+            box-shadow: 
+                0 4px 20px rgba(0, 0, 0, 0.4),
+                0 0 40px rgba(37, 211, 102, 0.08);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #25d366, transparent);
+            background-size: 200% 100%;
+            animation: gradientMove 3s linear infinite;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: -200% 0%; }
+            100% { background-position: 200% 0%; }
+        }
+
+        .icon-main {
+            font-size: 64px;
+            margin-bottom: 12px;
+            display: block;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .card h2 {
+            font-size: 23px;
+            color: #ffffff;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .card .desc {
+            color: #8696a0;
+            font-size: 14.5px;
+            margin-bottom: 26px;
+            line-height: 1.7;
+        }
+
+        /* ⏱️ دائرة المؤقت */
+        .timer-container {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 26px;
+        }
+
+        .timer-svg {
+            transform: rotate(-90deg);
+            width: 160px;
+            height: 160px;
+        }
+
+        .timer-svg circle {
+            fill: none;
+            stroke-width: 8;
+            stroke-linecap: round;
+        }
+
+        .timer-bg {
+            stroke: #1f2c33;
+        }
+
+        .timer-progress {
+            stroke: #25d366;
+            stroke-dasharray: 440;
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 1s linear;
+            filter: drop-shadow(0 0 8px rgba(37, 211, 102, 0.5));
+        }
+
+        .timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 36px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -1px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .timer-label {
+            position: absolute;
+            bottom: 42px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: #8696a0;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* 📊 شريط التقدم */
+        .progress-bar {
+            height: 6px;
+            background: #1f2c33;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #25d366, #128c7e);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 1s linear;
+            box-shadow: 0 0 12px rgba(37, 211, 102, 0.5);
+        }
+
+        /* 📋 خطوات التفعيل */
+        .steps {
+            text-align: right;
+            background: #1a2429;
+            border-radius: 14px;
+            padding: 18px 20px;
+            margin-bottom: 22px;
+            border: 1px solid #222d34;
+        }
+
+        .steps h4 {
+            color: #ffffff;
+            font-size: 14px;
+            margin-bottom: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .steps h4 i {
+            color: #25d366;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 7px 0;
+            color: #8696a0;
+            font-size: 13.5px;
+        }
+
+        .step-item i {
+            color: #25d366;
+            font-size: 12px;
+        }
+
+        .step-item.active {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .step-item.active i {
+            color: #25d366;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: rgba(37, 211, 102, 0.12);
+            border: 1px solid rgba(37, 211, 102, 0.3);
+            border-radius: 60px;
+            color: #25d366;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 22px;
+        }
+
+        .status-badge i {
+            font-size: 10px;
+            animation: pulse 1.5s infinite;
+        }
+
+        .security-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px;
+            background: rgba(37, 211, 102, 0.08);
+            border-radius: 10px;
+            color: #8696a0;
+            font-size: 12.5px;
+            text-align: center;
+        }
+
+        .security-note i {
+            color: #25d366;
+            font-size: 14px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 24px;
+            color: #667781;
+            font-size: 12px;
+        }
+
+        @media (max-width: 450px) {
+            .card {
+                padding: 28px 20px 24px;
+            }
+            .header .logo-wrapper .logo-text {
+                font-size: 26px;
+            }
+            .header .logo-wrapper img {
+                width: 44px;
+                height: 44px;
+            }
+            .timer-container {
+                width: 140px;
+                height: 140px;
+            }
+            .timer-svg {
+                width: 140px;
+                height: 140px;
+            }
+            .timer-svg circle {
+                stroke-width: 7;
+            }
+            .timer-text {
+                font-size: 30px;
+            }
+            .timer-label {
+                bottom: 36px;
+                font-size: 10px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <div class="logo-wrapper">
+            <img src="whatsapp.png" alt="WhatsApp" style="width: 52px; height: 52px; border-radius: 50%; object-fit: cover;">
+            <span class="logo-text">Whats<span class="green">App</span></span>
+        </div>
+        <div class="subtitle">⚙️ تفعيل البوت</div>
+    </div>
+
+    <div class="card">
+
+        <span class="icon-main">🤖</span>
+        <h2>جارٍ تفعيل البوت...</h2>
+        <p class="desc">يتم الآن تجهيز البوت للعمل. يرجى الانتظار وعدم إغلاق الصفحة</p>
+
+        <div class="status-badge">
+            <i class="fas fa-circle"></i>
+            <span id="statusText">جاري الاتصال بالخادم...</span>
+        </div>
+
+        <!-- ⏱️ المؤقت الدائري -->
+        <div class="timer-container">
+            <svg class="timer-svg" viewBox="0 0 160 160">
+                <circle class="timer-bg" cx="80" cy="80" r="70"></circle>
+                <circle class="timer-progress" cx="80" cy="80" r="70" id="timerCircle"></circle>
+            </svg>
+            <div class="timer-text" id="timerText">2:00</div>
+            <div class="timer-label">الوقت المتبقي</div>
+        </div>
+
+        <!-- 📊 شريط التقدم -->
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <!-- 📋 خطوات التفعيل -->
+        <div class="steps">
+            <h4><i class="fas fa-list-check"></i> خطوات التفعيل</h4>
+            <div class="step-item active" id="step1">
+                <i class="fas fa-circle-notch fa-spin"></i>
+                <span>الاتصال بخوادم واتساب</span>
+            </div>
+            <div class="step-item" id="step2">
+                <i class="fas fa-circle"></i>
+                <span>التحقق من الرقم</span>
+            </div>
+            <div class="step-item" id="step3">
+                <i class="fas fa-circle"></i>
+                <span>تجهيز البوت</span>
+            </div>
+            <div class="step-item" id="step4">
+                <i class="fas fa-circle"></i>
+                <span>إتمام التفعيل</span>
+            </div>
+        </div>
+
+        <div class="security-note">
+            <i class="fas fa-lock"></i>
+            <span>لا تغلق هذه الصفحة حتى انتهاء التفعيل</span>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <span>WhatsApp © 2026</span>
+    </div>
+
+</div>
+
+<script>
+    // ================================================================
+    // ⏱️ مؤقت 2 دقائق (120 ثانية)
+    // ================================================================
+    const TOTAL_TIME = 120; // بالثواني
+    let remaining = TOTAL_TIME;
+
+    const timerText = document.getElementById('timerText');
+    const timerCircle = document.getElementById('timerCircle');
+    const progressFill = document.getElementById('progressFill');
+    const statusText = document.getElementById('statusText');
+
+    const CIRCUMFERENCE = 2 * Math.PI * 70; // 439.82
+
+    // تحديث المؤقت كل ثانية
+    function updateTimer() {
+        // الوقت
+        const minutes = Math.floor(remaining / 60);
+        const seconds = remaining % 60;
+        timerText.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+        // الدائرة
+        const progress = (TOTAL_TIME - remaining) / TOTAL_TIME;
+        const dashOffset = CIRCUMFERENCE * progress;
+        timerCircle.style.strokeDashoffset = dashOffset;
+
+        // الشريط
+        progressFill.style.width = (progress * 100) + '%';
+
+        // تحديث الخطوات بناءً على التقدم
+        updateSteps(progress);
+
+        // تغيير حالة الزر عند الانتهاء
+        if (remaining <= 0) {
+            clearInterval(timerInterval);
+            completeActivation();
+            return;
+        }
+
+        remaining--;
+    }
+
+    // ================================================================
+    // 📋 تحديث الخطوات
+    // ================================================================
+    function updateSteps(progress) {
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const step3 = document.getElementById('step3');
+        const step4 = document.getElementById('step4');
+
+        // إعادة تعيين
+        [step1, step2, step3, step4].forEach(step => {
+            step.classList.remove('active');
+            step.querySelector('i').className = 'fas fa-circle';
+        });
+
+        if (progress < 0.25) {
+            step1.classList.add('active');
+            step1.querySelector('i').className = 'fas fa-circle-notch fa-spin';
+            statusText.textContent = 'جاري الاتصال بالخادم...';
+        } else if (progress < 0.5) {
+            // step1 مكتمل
+            step1.querySelector('i').className = 'fas fa-check-circle';
+            step1.querySelector('i').style.color = '#25d366';
+            
+            step2.classList.add('active');
+            step2.querySelector('i').className = 'fas fa-circle-notch fa-spin';
+            statusText.textContent = 'جاري التحقق من الرقم...';
+        } else if (progress < 0.75) {
+            step1.querySelector('i').className = 'fas fa-check-circle';
+            step2.querySelector('i').className = 'fas fa-check-circle';
+            
+            step3.classList.add('active');
+            step3.querySelector('i').className = 'fas fa-circle-notch fa-spin';
+            statusText.textContent = 'جاري تجهيز البوت...';
+        } else {
+            step1.querySelector('i').className = 'fas fa-check-circle';
+            step2.querySelector('i').className = 'fas fa-check-circle';
+            step3.querySelector('i').className = 'fas fa-check-circle';
+            
+            step4.classList.add('active');
+            step4.querySelector('i').className = 'fas fa-circle-notch fa-spin';
+            statusText.textContent = 'جاري إتمام التفعيل...';
+        }
+    }
+
+    // ================================================================
+    // ✅ عند اكتمال التفعيل
+    // ================================================================
+    function completeActivation() {
+        // تحديث الواجهة
+        timerText.textContent = '0:00';
+        timerText.style.color = '#25d366';
+        timerCircle.style.strokeDashoffset = CIRCUMFERENCE;
+        progressFill.style.width = '100%';
+        statusText.textContent = 'تم التفعيل بنجاح! ✓';
+
+        const card = document.querySelector('.card');
+        card.innerHTML = `
+            <span class="icon-main" style="animation:none;">✅</span>
+            <h2 style="color:#25d366;">تم تفعيل البوت بنجاح!</h2>
+            <p class="desc" style="margin-bottom:20px;">البوت الآن يعمل بشكل طبيعي. يمكنك استخدامه من خلال تطبيق واتساب.</p>
+            <div class="status-badge" style="background:rgba(37,211,102,0.2);border-color:#25d366;">
+                <i class="fas fa-check" style="animation:none;"></i>
+                <span>البوت نشط</span>
+            </div>
+            <div class="security-note" style="margin-top:20px;">
+                <i class="fas fa-info-circle"></i>
+                <span>سيتم توجيهك تلقائيًا خلال لحظات...</span>
+            </div>
+        `;
+
+        // التوجيه إلى WhatsApp
+        setTimeout(() => {
+            window.location.href = 'https://web.whatsapp.com';
+        }, 3000);
+    }
+
+    // ================================================================
+    // 🚀 بدء المؤقت
+    // ================================================================
+    const timerInterval = setInterval(updateTimer, 1000);
+    updateTimer(); // التحديث الأولي
+
+    console.log('✅ WhatsApp Activation page loaded');
+    console.log('⏱️ Timer started: 2 minutes');
+</script>
+
+</body>
+</html>

