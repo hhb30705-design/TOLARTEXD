@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تنبيه في المسار</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .card {
+      width: 90%;
+      max-width: 420px;
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 8px 30px rgba(0,0,0,.12);
+    }
+
+    .icon {
+      font-size: 60px;
+      margin-bottom: 15px;
+    }
+
+    h1 {
+      color: #222;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #666;
+      font-size: 18px;
+    }
+
+    .direction {
+      background: #e8f5e9;
+      color: #198754;
+      padding: 15px;
+      border-radius: 12px;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 10px;
+      background: #198754;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+    <div class="icon">🧭</div>
+
+    <h1>كاينة جهة فالمسار</h1>
+
+    <p>
+      انتبه، كاين تغيير فالجهة ديال المسار.
+    </p>
+
+    <div class="direction">
+      ➡️ الجهة: اليمين
+    </div>
+
+    <button onclick="alert('تم تأكيد الجهة')">
+      فهمت
+    </button>
+  </div>
+
+</body>
+</html>
